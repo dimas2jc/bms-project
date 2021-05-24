@@ -1,0 +1,32 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class AddForeignKeysToTimeplanTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::table('timeplan', function (Blueprint $table) {
+            $table->foreign('ID_DETAIL_ACTIVITY', 'timeplan_ibfk_1')->references('ID_DETAIL_ACTIVITY')->on('detail_activity')->onUpdate('RESTRICT')->onDelete('RESTRICT');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::table('timeplan', function (Blueprint $table) {
+            $table->dropForeign('timeplan_ibfk_1');
+        });
+    }
+}
