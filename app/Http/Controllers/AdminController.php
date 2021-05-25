@@ -16,6 +16,10 @@ class AdminController extends Controller
     public function timetable()
     {
 
+
+
+
+
         return view('admin.index');
     }
 
@@ -134,5 +138,11 @@ class AdminController extends Controller
         CategoryActivity::findOrFail($request->id)->update(['NAMA' => $request->nama, 'updated_at' => Carbon::now()]);
 
         return redirect('admin/category');
+    }
+
+    public function calendar()
+    {
+
+        return view('admin.calendar');
     }
 }

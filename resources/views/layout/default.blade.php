@@ -12,12 +12,15 @@
     <title>Solusi Master | @yield('title')</title>
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="{{asset('metroadmin/images/favicon.png')}}">
+
+    @yield('extra-css')
+    
     <!-- <link href="{{asset('metroadmin/vendor/jqvmap/css/jqvmap.min.css')}}" rel="stylesheet"> -->
 	<!-- <link rel="stylesheet" href="{{asset('metroadmin/vendor/chartist/css/chartist.min.css')}}"> -->
     <link href="{{asset('metroadmin/vendor/bootstrap-select/dist/css/bootstrap-select.min.css')}}" rel="stylesheet">
     <link href="{{asset('metroadmin/css/style.css')}}" rel="stylesheet">
 
-@yield('extra-css')
+
 
 </head>
 
@@ -154,8 +157,8 @@
     <!-- <script src="{{asset('metroadmin/js/dashboard/dashboard-1.js')}}"></script> -->
 
 	<!-- Svganimation scripts -->
-    <!-- <script src="{{asset('metroadmin/vendor/svganimation/vivus.min.js')}}"></script>
-    <script src="{{asset('metroadmin/vendor/svganimation/svg.animation.js')}}"></script> -->
+    <script src="{{asset('metroadmin/vendor/svganimation/vivus.min.js')}}"></script>
+    <script src="{{asset('metroadmin/vendor/svganimation/svg.animation.js')}}"></script>
     
     @yield('extra-script')
 
