@@ -15,12 +15,8 @@ class AdminController extends Controller
 {
     public function timetable()
     {
-
-
-
-
-
-        return view('admin.index');
+        $outlet = Outlet::all()->toArray();
+        return view('admin.index', compact('outlet'));
     }
 
     public function userPIC()
