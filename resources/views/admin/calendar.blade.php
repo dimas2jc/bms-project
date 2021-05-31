@@ -4,6 +4,7 @@
 
 @section('extra-css')
     <link href="{{asset('metroadmin/vendor/fullcalendar/css/fullcalendar.min.css')}}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('/metroadmin/vendor/select2/css/select2.min.css') }}">
 @endsection
 
 {{-- Content --}}
@@ -33,18 +34,18 @@
                 <div class="card-header">
                     <div class="row col-lg-6">
                         <div class="col-sm-4">
-                        <select class="form-control select-component" name="outlet" required>
-                            <option selected disabled>Pilih Outlet . .</option>
-                            
-                            <option value=""></option>
+                        <select class="form-control" name="outlet" required>
+                            @for ($i = 0; $i < count($outlet); $i++)
+                                <option @if($i == 0) selected @endif value="{{ $outlet[$i]['ID_OUTLET'] }}">{{ $outlet[$i]['NAMA'] }}</option>
+                            @endfor
                             
                         </select>
                         </div>
                         <div class="col-sm-8">
-                        <select class="form-control select-component" name="outlet" required>
-                            <option selected disabled>Pilih Category . .</option>
-                            
-                            <option value=""></option>
+                        <select class="form-control" name="category" required>
+                            @for ($i = 0; $i < count($category_activity); $i++)
+                                <option @if($i == 0) selected @endif value="{{ $category_activity[$i]['ID_CATEGORY'] }}">{{ $category_activity[$i]['NAMA'] }}</option>
+                            @endfor
                             
                         </select>
                         </div>
@@ -120,5 +121,13 @@
     <script src="{{asset('metroadmin/vendor/jqueryui/js/jquery-ui.min.js')}}"></script>
     <script src="{{asset('metroadmin/vendor/moment/moment.min.js')}}"></script>
     <script src="{{asset('metroadmin/vendor/fullcalendar/js/fullcalendar.min.js')}}"></script>
-    <script src="{{asset('metroadmin/js/plugins-init/fullcalendar-init.js')}}"></script>
+    <script src="{{ asset('/metroadmin/vendor/select2/js/select2.min.js') }}"></script>
+    <script>
+        const CATEGORY_ACTIVITY = {!! json_encode($category_activity) !!}
+        const DETAIL_ACTIVITY = {!! json_encode($detail_activity) !!}
+        const OUTLET = {!! json_encode($outlet) !!}
+        const TIMEPLAN = {!! json_encode($timeplan) !!}
+        console.log(DETAIL_ACTIVITY)
+    </script>
+    <script src="{{asset('assets/admin/js/calendar.js')}}"></script>
 @endsection

@@ -158,7 +158,25 @@ class AdminController extends Controller
 
     public function calendar()
     {
+        $outlet = Outlet::all()->toArray();
+        $category_activity = CategoryActivity::orderBy('created_at', 'ASC')->get()->toArray();
+        $detail_activity = DetailActivity::orderBy('created_at', 'ASC')->get()->toArray();
+        $timeplan = Timeplan::orderBy('created_at', 'ASC')->get()->toArray();
 
-        return view('admin.calendar');
+        for($i = 0; $i < count($detail_activity); $i++){
+            for($j = 0; $j < count($timeplan); $j++){
+                if($timeplan[$j]['ID_DETAIL_ACTIVITY'] == $detail_activity[$i]['ID_DETAIL_ACTIVITY']){
+                    $tanggal_mulai = $timeplan[$j]['TANGGAL_START'];
+                    $tanggal_selesai = $timeplan[$j]['TANGGAL_END'];
+                    $durasi = date_diff(date_create($tanggal_mulai), date_create($tanggal_selesai));
+
+                    $detail_activity[$i]['TANGGAL_START'] = $tanggal_mulai;
+                    $detail_activity[$i]['TANGGAL_END'] = $tanggal_selesai;
+                    $detail_activity[$i]['DURASI'] = $durasi;
+                }
+            }
+        }
+
+        return view('admin.calendar', compact('category_activity', 'detail_activity', 'outlet', 'timeplan'));
     }
 }

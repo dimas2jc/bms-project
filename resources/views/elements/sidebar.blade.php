@@ -8,11 +8,11 @@
 					<span class="nav-text">Timetable</span>
 				</a>
 			</li>
-			<li><a href="{{ url('admin/reschedule') }}" aria-expanded="false">
+			<!-- <li><a href="{{ url('admin/reschedule') }}" aria-expanded="false">
 					<i class="fa fa-refresh" aria-hidden="true"></i>
 					<span class="nav-text">Reschedule Activity</span>
 				</a>
-			</li>
+			</li> -->
 			<li><a href="{{ url('admin/calendar') }}" aria-expanded="false">
 					<i class="fa fa-calendar" aria-hidden="true"></i>
 					<span class="nav-text">Calendar</span>
