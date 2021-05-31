@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ActivityController;
 
 use Ramsey\Uuid\Uuid;
 
@@ -41,7 +42,7 @@ Route::group(['middleware' => ['auth']],function(){
     Route::post('/ganti-password', [HomeController::class, 'updatePassword']);
     Route::post('/password/verify_old_pass', 'HomeController@verify_old_password');
 
-    Route::get('admin/timetable', [AdminController::class, 'timetable'])->name('admin');
+    Route::get('/admin/timetable', [AdminController::class, 'timetable'])->name('admin');
     Route::get('admin/reschedule', [AdminController::class, 'reschedule']);
     Route::get('admin/calendar', [AdminController::class, 'calendar']);
     Route::get('admin/user-pic', [AdminController::class, 'userPIC']);
@@ -59,5 +60,8 @@ Route::group(['middleware' => ['auth']],function(){
     Route::post('admin/tambah-kategori', [AdminController::class, 'storeCategory']);
     Route::post('admin/edit-kategori', [AdminController::class, 'editCategory']);
 
+    // Activity
+    Route::post('/admin/activity', [ActivityController::class, 'store']);
+    Route::put('/admin/activity', [ActivityController::class, 'update']);
 
 });
