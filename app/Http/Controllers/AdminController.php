@@ -179,4 +179,10 @@ class AdminController extends Controller
 
         return view('admin.calendar', compact('category_activity', 'detail_activity', 'outlet', 'timeplan'));
     }
+
+    public function updateCalendar(Request $request)
+    {
+
+        return redirect('admin/calendar');
+    }
 }

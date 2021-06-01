@@ -1,5 +1,31 @@
 ! function(e) {
     "use strict";
+    // Convert Timeplan
+    const data = [];
+    for(let x = 0; x < DETAIL_ACTIVITY.length; x++){
+        data[x] = {
+            title: DETAIL_ACTIVITY[x].NAMA_AKTIFITAS,
+            start: DETAIL_ACTIVITY[x].TANGGAL_START,
+            end: DETAIL_ACTIVITY[x].TANGGAL_END,
+            id: DETAIL_ACTIVITY[x].ID_DETAIL_ACTIVITY
+        };
+    };
+
+    // Init Modal Update
+    const modalUpdate = '<div class="form-group">'+
+                            '<label>Dokumen</label><br>'+
+                            '<input type="file" name="file" accept=".pdf, image/*"><br>'+
+                            '<small style="color: red; font-style: italic">Format file .pdf dan gambar</small>'+
+                        '</div>'+
+                        '<div class="form-group">'+
+                            '<label>Keterangan</label>'+
+                            '<textarea name="keterangan" class="form-control input-default"></textarea>'+
+                        '</div>';
+    const footer = '<div class="modal-footer">'+
+                        '<button type="button" class="btn btn-sm btn-light btn-rounded px-3" data-dismiss="modal">Cancel</button>'+
+                        '<button type="submit" class="btn btn-sm btn-primary btn-rounded px-3 save-event">Save</button>'+
+                    '</div>';
+
     var t = function() {
         this.$body = e("body"), 
         this.$modal = e("#event-modal"), 
@@ -17,42 +43,44 @@
         i.start = n, o && (i.className = [o]), 
         this.$calendar.fullCalendar("renderEvent", i, !0), 
         e("#drop-remove").is(":checked") && t.remove()
-    }, t.prototype.onEventClick = function(t, n, a) {
+    }, 
+    t.prototype.onEventClick = function(t, n, a) {
         var o = this,
-            i = e("<form></form>");
-        i.append("<label>Change event name</label>"), 
-        i.append("<div class='input-group'><input class='form-control' type=text value='" + t.title + "' /><span class='input-group-btn'><button type='submit' class='btn btn-success waves-effect waves-light'><i class='fa fa-check'></i> Save</button></span></div>"), o.$modal.modal({
-            backdrop: "static"
-        }), o.$modal.find(".delete-event").show().end().find(".save-event").hide().end().find(".modal-body").empty().prepend(i).end().find(".delete-event").unbind("click").on("click", function() {
-            o.$calendarObj.fullCalendar("removeEvents", function(e) {
-                return e._id == t._id
-            }), o.$modal.modal("hide")
-        }), o.$modal.find("form").on("submit", function() {
-            return t.title = i.find("input[type=text]").val(), o.$calendarObj.fullCalendar("updateEvent", t), o.$modal.modal("hide"), !1
-        })
-    }, t.prototype.onSelect = function(t, n, a) {
-        var o = this;
+        
+            i = e('<form action="{{url(\'admin/calendar/update\')}}" id="form-update" method="POST"></form>');
+        i.append("<input type='hidden' name='id' value='"+t.id+"'>"),
+        i.append(modalUpdate),
+        o.$modal.find(".modal-footer").hide(),
+        i.append(footer),
         o.$modal.modal({
             backdrop: "static"
-        });
-        var i = e("<form></form>");
-        i.append("<div class='row'></div>"), 
-        i.find(".row").append("<div class='col-md-6'><div class='form-group'><label class='control-label'>Event Name</label><input class='form-control' placeholder='Insert Event Name' type='text' name='title'/></div></div>").append("<div class='col-md-6'><div class='form-group'><label class='control-label'>Category</label><select class='form-control' name='category'></select></div></div>").find("select[name='category']").append("<option value='bg-danger'>Danger</option>").append("<option value='bg-success'>Success</option>").append("<option value='bg-dark'>Dark</option>").append("<option value='bg-primary'>Primary</option>").append("<option value='bg-pink'>Pink</option>").append("<option value='bg-info'>Info</option>").append("<option value='bg-warning'>Warning</option></div></div>"), o.$modal.find(".delete-event").hide().end().find(".save-event").show().end().find(".modal-body").empty().prepend(i).end().find(".save-event").unbind("click").on("click", function() {
-            i.submit()
-        }), o.$modal.find("form").on("submit", function() {
-            var e = i.find("input[name='title']").val(),
-                a = (i.find("input[name='beginning']").val(), 
-                i.find("input[name='ending']").val(), 
-                i.find("select[name='category'] option:checked").val());
-            return null !== e && 0 != e.length ? (o.$calendarObj.fullCalendar("renderEvent", {
-                title: e,
-                start: t,
-                end: n,
-                allDay: !1,
-                className: a
-            }, !0), o.$modal.modal("hide")) : alert("You have to give a title to your event"), !1
-        }), o.$calendarObj.fullCalendar("unselect")
-    }, t.prototype.enableDrag = function() {
+        }),
+        o.$modal.find(".delete-event").hide().end().find(".save-event").hide().end().find(".modal-body").empty().prepend(i).end();
+    }, 
+    t.prototype.onSelect = function(t, n, a) {
+        // var o = this;
+        // o.$modal.modal({
+        //     backdrop: "static"
+        // });
+        // var i = e("<form></form>");
+        // i.append("<div class='row'></div>"), 
+        // i.find(".row").append("<div class='col-md-6'><div class='form-group'><label class='control-label'>Event Name</label><input class='form-control' placeholder='Insert Event Name' type='text' name='title'/></div></div>").append("<div class='col-md-6'><div class='form-group'><label class='control-label'>Category</label><select class='form-control' name='category'></select></div></div>").find("select[name='category']").append("<option value='bg-danger'>Danger</option>").append("<option value='bg-success'>Success</option>").append("<option value='bg-dark'>Dark</option>").append("<option value='bg-primary'>Primary</option>").append("<option value='bg-pink'>Pink</option>").append("<option value='bg-info'>Info</option>").append("<option value='bg-warning'>Warning</option></div></div>"), o.$modal.find(".delete-event").hide().end().find(".save-event").show().end().find(".modal-body").empty().prepend(i).end().find(".save-event").unbind("click").on("click", function() {
+        //     i.submit()
+        // }), o.$modal.find("form").on("submit", function() {
+        //     var e = i.find("input[name='title']").val(),
+        //         a = (i.find("input[name='beginning']").val(), 
+        //         i.find("input[name='ending']").val(), 
+        //         i.find("select[name='category'] option:checked").val());
+        //     return null !== e && 0 != e.length ? (o.$calendarObj.fullCalendar("renderEvent", {
+        //         title: e,
+        //         start: t,
+        //         end: n,
+        //         allDay: !1,
+        //         className: a
+        //     }, !0), o.$modal.modal("hide")) : alert("You have to give a title to your event"), !1
+        // }), o.$calendarObj.fullCalendar("unselect")
+    }, 
+    t.prototype.enableDrag = function() {
         e(this.$event).each(function() {
             var t = {
                 title: e.trim(e(this).text())
@@ -63,11 +91,12 @@
                 revertDuration: 0
             })
         })
-    }, t.prototype.init = function() {
+    }, 
+    t.prototype.init = function() {
         this.enableDrag();
         var t = new Date,
             n = (t.getDate(), t.getMonth(), t.getFullYear(), new Date(e.now())),
-            a = [],
+            a = data,
             o = this;
         o.$calendarObj = o.$calendar.fullCalendar({
             slotDuration: "00:15:00",

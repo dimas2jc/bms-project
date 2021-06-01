@@ -17,7 +17,7 @@
     
     <!-- <link href="{{asset('metroadmin/vendor/jqvmap/css/jqvmap.min.css')}}" rel="stylesheet"> -->
 	<!-- <link rel="stylesheet" href="{{asset('metroadmin/vendor/chartist/css/chartist.min.css')}}"> -->
-    <link href="{{asset('metroadmin/vendor/bootstrap-select/dist/css/bootstrap-select.min.css')}}" rel="stylesheet">
+    <!-- <link href="{{asset('metroadmin/vendor/bootstrap-select/dist/css/bootstrap-select.min.css')}}" rel="stylesheet"> -->
     <link href="{{asset('metroadmin/css/style.css')}}" rel="stylesheet">
 
 
@@ -129,7 +129,7 @@
     ***********************************-->
     <!-- Required vendors -->
     <script src="{{asset('metroadmin/vendor/global/global.min.js')}}"></script>
-	<script src="{{asset('metroadmin/vendor/bootstrap-select/dist/js/bootstrap-select.min.js')}}"></script>
+	<!-- <script src="{{asset('metroadmin/vendor/bootstrap-select/dist/js/bootstrap-select.min.js')}}"></script> -->
     <script src="{{asset('metroadmin/js/custom.min.js')}}"></script>
     <script src="{{asset('metroadmin/js/deznav-init.js')}}"></script>
 

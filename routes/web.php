@@ -60,6 +60,13 @@ Route::group(['middleware' => ['auth']],function(){
     Route::post('admin/tambah-kategori', [AdminController::class, 'storeCategory']);
     Route::post('admin/edit-kategori', [AdminController::class, 'editCategory']);
 
+    Route::post('admin/calendar/update', [AdminController::class, 'updateCalendar']);
+
+
+
+
+
+
     // Activity
     Route::post('/admin/activity', [ActivityController::class, 'store']);
     Route::put('/admin/activity', [ActivityController::class, 'update']);

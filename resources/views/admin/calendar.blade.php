@@ -31,28 +31,33 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
-                <div class="card-header">
-                    <div class="row col-lg-6">
-                        <div class="col-sm-4">
-                        <select class="form-control" name="outlet" required>
-                            @for ($i = 0; $i < count($outlet); $i++)
-                                <option @if($i == 0) selected @endif value="{{ $outlet[$i]['ID_OUTLET'] }}">{{ $outlet[$i]['NAMA'] }}</option>
-                            @endfor
-                            
-                        </select>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-2">
+                            <label class="mr-3">Select Outlet</label>
                         </div>
-                        <div class="col-sm-8">
-                        <select class="form-control" name="category" required>
-                            @for ($i = 0; $i < count($category_activity); $i++)
-                                <option @if($i == 0) selected @endif value="{{ $category_activity[$i]['ID_CATEGORY'] }}">{{ $category_activity[$i]['NAMA'] }}</option>
-                            @endfor
-                            
-                        </select>
+                        <div class="col-md-4 col-sm-8">
+                            <select class="form-control" name="outlet">
+                                @for ($i = 0; $i < count($outlet); $i++)
+                                    <option @if($i == 0) selected @endif value="{{ $outlet[$i]['ID_OUTLET'] }}">{{ $outlet[$i]['NAMA'] }}</option>
+                                @endfor
+                            </select>
                         </div>
                     </div>
-                </div>
-                <hr>
-                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-2">
+                            <label class="mr-3">Select Category</label>
+                        </div>
+                        <div class="col-md-4 col-sm-8">
+                            <select class="form-control" name="category" required>
+                                @for ($i = 0; $i < count($category_activity); $i++)
+                                    <option @if($i == 0) selected @endif value="{{ $category_activity[$i]['ID_CATEGORY'] }}">{{ $category_activity[$i]['NAMA'] }}</option>
+                                @endfor
+                                
+                            </select>
+                        </div>
+                    </div>
+                    <hr>
                     <div id="calendar" class="app-fullcalendar"></div>
                 </div>
             </div>
