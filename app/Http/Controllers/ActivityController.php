@@ -33,6 +33,8 @@ class ActivityController extends Controller
 
         if($request->has('input_event_penting')){
             $detail_activity->FLAG = 1;
+        } else {
+            $detail_activity->FLAG = 0;
         }
 
         $detail_activity->save();

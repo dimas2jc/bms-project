@@ -29,5 +29,5 @@ table td, table th {
     overflow-y: hidden;
     white-space: nowrap;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
 }

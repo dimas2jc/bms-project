@@ -8,14 +8,21 @@ $(function(){
     $('select').select2()
     $('#input_nama_outlet').val(OUTLET[0].NAMA)
     $('#input_id_outlet').val(OUTLET[0].ID_OUTLET)
-})
 
-draw_category(CATEGORY_ACTIVITY[0].ID_OUTLET)
-let durasi = -1
+    clear_timetable(OUTLET[0].ID_OUTLET)
+    clear_tanggal_penting(OUTLET[0].ID_OUTLET)
+
+    if(CATEGORY_ACTIVITY.length > 0){
+        draw_category(CATEGORY_ACTIVITY[0].ID_OUTLET)
+        draw_tanggal_penting(CATEGORY_ACTIVITY[0].ID_OUTLET)
+    }
+    
+    let durasi = -1
+    let tahun_aktif = $('#tahun-aktif').val()
+})
 
 function switch_outlet(select_outlet){
     let id_outlet = $(select_outlet).val()
-    $('#timetable-tbody').empty()
     $('#input_category').empty()
 
     for(let i = 0; i < OUTLET.length; i++){
@@ -33,7 +40,10 @@ function switch_outlet(select_outlet){
         }
     }
 
+    clear_timetable(id_outlet)
+    clear_tanggal_penting(id_outlet)
     draw_category(id_outlet)
+    draw_tanggal_penting(id_outlet)
 }
 
 function draw_category(id_outlet){
@@ -47,9 +57,9 @@ function draw_category(id_outlet){
 
 function put_category_into_table(category_name){
     let tr =    `<tr style="background-color: #F4F4F7;">
-                    <td style="text-align: left;">${category_name}</td>
+                    <td style="text-align:left;">${category_name}</td>
                     <td></td>
-                    <td colspan="12">${category_name}</td>
+                    <td colspan="48">${category_name}</td>
                 </tr>
                 `
     $('#timetable-tbody').append(tr)
@@ -57,31 +67,45 @@ function put_category_into_table(category_name){
 
 function draw_activity(id_category){
     for(let i = 0; i < DETAIL_ACTIVITY.length; i++){
-        if(DETAIL_ACTIVITY[i].ID_CATEGORY == id_category){
+        if(DETAIL_ACTIVITY[i].ID_CATEGORY == id_category && DETAIL_ACTIVITY[i].FLAG == 0){
             put_activity_into_table(DETAIL_ACTIVITY[i])
         }
     }
 }
 
 function put_activity_into_table(activity){
+    let empty_td = `<td></td>`
     let tr =    `<tr style="background-color: #FFFFFF;">
-                    <td style="text-align: left;">${activity.NAMA_AKTIFITAS}</td>
+                    <td style="text-align:left; cursor: pointer;" data-toggle="tooltip" data-placement="top" title="click to view detail"
+                        data-id="${activity.ID_DETAIL_ACTIVITY}" onclick="view_detail_activity(this)">
+                        ${activity.NAMA_AKTIFITAS}
+                    </td>
                     <td>${activity.DURASI.d} Hari</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    ${empty_td.repeat(48)}
                 </tr>
                 `
     $('#timetable-tbody').append(tr)
+}
+
+function draw_tanggal_penting(id_outlet){
+    for(let i = 0; i < DETAIL_ACTIVITY.length; i++){
+        if(DETAIL_ACTIVITY[i].ID_OUTLET == id_outlet && DETAIL_ACTIVITY[i].FLAG == 1){
+            put_tanggal_penting_into_table(DETAIL_ACTIVITY[i])
+        }
+    }
+}
+
+function put_tanggal_penting_into_table(activity){
+    let tr =    `<tr style="background-color: #FFFFFF;">
+                    <td style="text-align:left; cursor: pointer;" data-toggle="tooltip" data-placement="top" title="click to view detail"
+                        data-id="${activity.ID_DETAIL_ACTIVITY}" onclick="view_detail_activity(this)">
+                        ${activity.NAMA_AKTIFITAS}
+                    </td>
+                    <td>${activity.TANGGAL_START}</td>
+                    <td>${activity.TANGGAL_END}</td>
+                </tr>`
+
+    $('#tanggal-penting-tbody').append(tr)
 }
 
 function calculate_activity_duration(){
@@ -149,5 +173,67 @@ function add_activity_form_check(){
         return true
     } else {
         return false
+    }
+}
+
+function view_detail_activity(activity_el){
+    var detail 
+
+    for(let i = 0; i < DETAIL_ACTIVITY.length; i++){
+        if(DETAIL_ACTIVITY[i].ID_DETAIL_ACTIVITY == $(activity_el).data('id')){
+            detail = DETAIL_ACTIVITY[i]
+            break
+        }
+    }
+
+    $('#detail_outlet').val(detail.OUTLET)
+    $('#detail_category').val(detail.CATEGORY)
+    $('#detail_nama_activity').val(detail.NAMA_AKTIFITAS)
+    $('#detail_tanggal_mulai').val(detail.TANGGAL_START)
+    $('#detail_tanggal_selesai').val(detail.TANGGAL_END)
+    $('#detail_durasi').val(`${detail.DURASI.d} Hari`)
+    $('#detail_pic').val(detail.PIC)
+
+    $('#detail-activity-modal').modal('show')
+}
+
+function clear_timetable(id_outlet){
+    let x = 0
+
+    for(let i = 0; i < DETAIL_ACTIVITY.length; i++){
+        if(DETAIL_ACTIVITY[i].ID_OUTLET == id_outlet && DETAIL_ACTIVITY[i].FLAG == 0){
+            x++
+        }
+    }
+
+    $('#timetable-tbody').empty()
+
+    if(x == 0){
+        let tr =    `<tr style="background-color: #fafafa;">
+                        <td colspan="50">Data is empty</td>
+                    </tr>`
+        
+        $('#timetable-tbody').append(tr)
+    }
+
+}
+
+function clear_tanggal_penting(id_outlet){
+    let x = 0
+
+    for(let i = 0; i < DETAIL_ACTIVITY.length; i++){
+        if(DETAIL_ACTIVITY[i].ID_OUTLET == id_outlet && DETAIL_ACTIVITY[i].FLAG == 1){
+            x++
+        }
+    }
+
+    $('#tanggal-penting-tbody').empty()
+
+    if(x == 0){
+        let tr =    `<tr style="background-color: #fafafa;">
+                        <td colspan="3">Data is empty</td>
+                    </tr>`
+        
+        $('#tanggal-penting-tbody').append(tr)
     }
 }

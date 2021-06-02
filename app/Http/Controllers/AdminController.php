@@ -11,6 +11,7 @@ use App\Models\DetailActivity;
 use App\Models\Outlet;
 use App\Models\Timeplan;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
@@ -29,11 +30,34 @@ class AdminController extends Controller
                     $tanggal_selesai = $timeplan[$j]['TANGGAL_END'];
                     $durasi = date_diff(date_create($tanggal_mulai), date_create($tanggal_selesai));
 
-                    $detail_activity[$i]['TANGGAL_START'] = $tanggal_mulai;
-                    $detail_activity[$i]['TANGGAL_END'] = $tanggal_selesai;
+                    $detail_activity[$i]['TANGGAL_START'] = date('d-m-Y', strtotime($tanggal_mulai));
+                    $detail_activity[$i]['TANGGAL_END'] = date('d-m-Y', strtotime($tanggal_selesai));
                     $detail_activity[$i]['DURASI'] = $durasi;
+
+                    break;
                 }
             }
+
+            for($k = 0; $k < count($category_activity); $k++){
+                if($category_activity[$k]['ID_CATEGORY'] == $detail_activity[$i]['ID_CATEGORY']){
+                    $detail_activity[$i]['CATEGORY'] = $category_activity[$k]['NAMA'];
+                    $detail_activity[$i]['ID_OUTLET'] = $category_activity[$k]['ID_OUTLET'];
+
+                    break;
+                }
+            }
+
+            for($l = 0; $l < count($outlet); $l++){
+                if($outlet[$l]['ID_OUTLET'] == $detail_activity[$i]['ID_OUTLET']){
+                    $detail_activity[$i]['OUTLET'] = $outlet[$l]['NAMA'];
+                    break;
+                }
+            }
+
+            $pic_id = DB::table('user_log')->where('activity', $detail_activity[$i]['ID_DETAIL_ACTIVITY'])->value('user');
+            $pic_name = DB::table('user')->where('ID_USER', $pic_id)->value('NAMA');
+
+            $detail_activity[$i]['PIC'] = $pic_name;
         }
 
         return view('admin.index', compact('category_activity', 'detail_activity', 'outlet', 'pic', 'timeplan'));

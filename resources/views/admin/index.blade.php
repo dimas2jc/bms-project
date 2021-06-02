@@ -56,30 +56,49 @@
                                 </div>
 
                                 <div id="timetable-div">
+                                    <!-- Main time table -->
                                     <table class="table table-bordered">
                                         <thead class="bg-warning">
                                             <tr>
                                                 <th rowspan="2">Activities</th>
                                                 <th rowspan="2">Durasi</th>
-                                                <th>
+                                                <th colspan="2">
                                                     <i class="fas fa-lg fa-caret-left" style="cursor: pointer;" data-toggle="tooltip" data-placement="right" title="Prev year"></i>
                                                 </th>
-                                                <th colspan="10">
-                                                    {{ date('Y') }}
+                                                <th colspan="44">
+                                                    <input type="hidden" value="{{ date('Y') }}" id="tahun-aktif">
+                                                    <span id="display-tahun-aktif">{{ date('Y') }}</span>
                                                 </th>
-                                                <th>
+                                                <th colspan="2">
                                                     <i class="fas fa-lg fa-caret-right" style="cursor: pointer;" data-toggle="tooltip" data-placement="left" title="Next year"></i>
                                                 </th>
                                             </tr>
                                             <tr>
                                                 @for ($i = 1; $i <= 12; $i++)
-                                                    <th>{{ date('M', strtotime(date('Y') . "-" . $i . "-01")) }}</th>
+                                                    <th colspan="4">{{ date('M', strtotime(date('Y') . "-" . $i . "-01")) }}</th>
                                                 @endfor
                                             </tr>
                                         </thead>
                                         <tbody id="timetable-tbody"></tbody>
                                     </table>
+                                    <!-- ./Main time table -->
                                 </div>
+
+                                <!-- Tanggal penting -->
+                                <table class="table table-bordered mt-5">
+                                    <thead class="bg-warning">
+                                        <tr>
+                                            <th colspan="3">Tanggal-tanggal Penting</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="w-50">Activity</th>
+                                            <th>Tanggal Mulai</th>
+                                            <th>Tanggal Selesai</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tanggal-penting-tbody"></tbody>
+                                </table>
+                                <!-- ./Tanggal penting -->
 
                             </div>
                         </div>
@@ -170,6 +189,61 @@
                 </div>
             </div>
             <!-- ./Add timeplan activity modal -->
+            
+            <!-- Detail activity modal -->
+            <div class="modal fade" id="detail-activity-modal" tabindex="-1" data-backdrop="static">
+                <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header d-flex justify-content-center">
+                            <h5 class="modal-title">Detail Activity</h5>
+                        </div>
+                        <div class="modal-body">
+
+                            <div class="form-group">
+                                <label>Outlet</label>
+                                <input type="text" id="detail_outlet" class="form-control" readonly style="cursor: not-allowed;">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Category</label>
+                                <input type="text" id="detail_category" class="form-control" readonly style="cursor: not-allowed;">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Nama Activity</label>
+                                <input type="text" id="detail_nama_activity" class="form-control" readonly style="cursor: not-allowed;">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Tanggal Mulai</label>
+                                <input type="text" id="detail_tanggal_mulai" class="form-control" readonly style="cursor: not-allowed;">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Tanggal Selesai</label>
+                                <input type="text" id="detail_tanggal_selesai" class="form-control" readonly style="cursor: not-allowed;">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Durasi</label>
+                                <input type="text" id="detail_durasi" class="form-control" readonly style="cursor: not-allowed;">
+                            </div>
+
+                            <div class="form-group">
+                                <label>PIC</label>
+                                <input type="text" id="detail_pic" class="form-control" readonly style="cursor: not-allowed;">
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-sm btn-secondary btn-rounded px-3" data-dismiss="modal">
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ./Add timeplan activity modal -->
 @endsection
 
 @section('extra-script')
@@ -180,7 +254,6 @@
         const DETAIL_ACTIVITY = {!! json_encode($detail_activity) !!}
         const OUTLET = {!! json_encode($outlet) !!}
         const TIMEPLAN = {!! json_encode($timeplan) !!}
-        console.log(DETAIL_ACTIVITY)
     </script>
     <script src="{{ asset('/assets/admin/js/timetable.js') }}"></script>
     
