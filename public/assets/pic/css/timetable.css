@@ -1,0 +1,33 @@
+table {
+    text-align: center;
+}
+
+table td, table th {
+    word-wrap: break-word !important;
+    white-space: normal !important;
+}
+
+.toast-success {
+    background-color: lime !important;
+}
+
+.toast-success * {
+    font-weight: bold;
+}
+
+#timetable-control-btn {
+    display: flex;
+    flex-direction: row;
+}
+
+#timetable-control-btn > * {
+    margin: 5px;
+}
+
+#timetable-div {
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    display: flex;
+    flex-direction: column;
+}

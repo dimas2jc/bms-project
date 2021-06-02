@@ -8,6 +8,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\InvestorController;
+use App\Http\Controllers\PenanggungjawabController;
 
 use Ramsey\Uuid\Uuid;
 
@@ -75,5 +76,10 @@ Route::group(['middleware' => ['auth']],function(){
 
     /* Investor */
     Route::get('/investor/calendar', [InvestorController::class, 'calendar'])->name('investor');
+    Route::get('/investor/timetable', [InvestorController::class, 'timetable']);
+
+
+    /* PIC */
+    Route::get('/pic/timetable', [PenanggungjawabController::class, 'timetable']);
 
 });
