@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ActivityController;
+use App\Http\Controllers\InvestorController;
 
 use Ramsey\Uuid\Uuid;
 
@@ -35,13 +36,13 @@ Route::get('/logout', [HomeController::class, 'logout'])->name('logout');
 Route::post('/post-login', [HomeController::class, 'postLogin']);
 
 
-/* Admin */
 Route::group(['middleware' => ['auth']],function(){
     Route::get('/profile', [HomeController::class, 'profile']);
     Route::get('/ganti-password', [HomeController::class, 'gantiPassword']);
     Route::post('/ganti-password', [HomeController::class, 'updatePassword']);
     Route::post('/password/verify_old_pass', 'HomeController@verify_old_password');
 
+    /* Admin */
     Route::get('/admin/timetable', [AdminController::class, 'timetable'])->name('admin');
     Route::get('admin/reschedule', [AdminController::class, 'reschedule']);
     Route::get('admin/calendar', [AdminController::class, 'calendar']);
@@ -70,5 +71,9 @@ Route::group(['middleware' => ['auth']],function(){
     // Activity
     Route::post('/admin/activity', [ActivityController::class, 'store']);
     Route::put('/admin/activity', [ActivityController::class, 'update']);
+
+
+    /* Investor */
+    Route::get('/investor/calendar', [InvestorController::class, 'calendar'])->name('investor');
 
 });

@@ -10,6 +10,7 @@ use App\Models\CategoryActivity;
 use App\Models\DetailActivity;
 use App\Models\Outlet;
 use App\Models\Timeplan;
+use App\Models\Progress;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -194,8 +195,8 @@ class AdminController extends Controller
                     $tanggal_selesai = $timeplan[$j]['TANGGAL_END'];
                     $durasi = date_diff(date_create($tanggal_mulai), date_create($tanggal_selesai));
 
-                    $detail_activity[$i]['TANGGAL_START'] = $tanggal_mulai;
-                    $detail_activity[$i]['TANGGAL_END'] = $tanggal_selesai;
+                    $detail_activity[$i]['TANGGAL_START'] = date('Y-m-d', strtotime($tanggal_mulai));
+                    $detail_activity[$i]['TANGGAL_END'] = date('Y-m-d', strtotime($tanggal_selesai));
                     $detail_activity[$i]['DURASI'] = $durasi;
                 }
             }
@@ -206,6 +207,21 @@ class AdminController extends Controller
 
     public function updateCalendar(Request $request)
     {
+        $nama_file = null;
+
+        if($request->file('file') != null)
+        {
+            $file = $request->file('file');
+            $nama_file = $file->getClientOriginalName();
+            $file->move('assets/dokumen/', $nama_file);
+        }
+
+        Progress::insert([
+            'ID_PROGRESS' => Uuid::uuid4()->getHex(),
+            'ID_DETAIL_ACTIVITY' => $request->id,
+            'KETERANGAN' => $request->keterangan,
+            'FILE' => $nama_file
+        ]);
 
         return redirect('admin/calendar');
     }
