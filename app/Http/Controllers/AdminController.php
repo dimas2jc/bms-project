@@ -30,10 +30,12 @@ class AdminController extends Controller
                     $tanggal_mulai = $timeplan[$j]['TANGGAL_START'];
                     $tanggal_selesai = $timeplan[$j]['TANGGAL_END'];
                     $durasi = date_diff(date_create($tanggal_mulai), date_create($tanggal_selesai));
+                    $deadline = date_diff(date_create(Carbon::now($tz = 'Asia/Jakarta')), date_create($tanggal_selesai));
 
                     $detail_activity[$i]['TANGGAL_START'] = date('d-m-Y', strtotime($tanggal_mulai));
                     $detail_activity[$i]['TANGGAL_END'] = date('d-m-Y', strtotime($tanggal_selesai));
                     $detail_activity[$i]['DURASI'] = $durasi;
+                    $detail_activity[$i]['DEADLINE'] = $deadline;
 
                     break;
                 }

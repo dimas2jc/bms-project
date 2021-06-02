@@ -77,7 +77,7 @@ function put_activity_into_table(activity){
     let empty_td = `<td></td>`
     let tr =    `<tr style="background-color: #FFFFFF;">
                     <td style="text-align:left; cursor: pointer;" data-toggle="tooltip" data-placement="top" title="click to view detail"
-                        data-id="${activity.ID_DETAIL_ACTIVITY}" onclick="view_detail_activity(this)">
+                        data-id="${activity.ID_DETAIL_ACTIVITY}" onclick="view_progress_activity(this)">
                         ${activity.NAMA_AKTIFITAS}
                     </td>
                     <td>${activity.DURASI.d} Hari</td>
@@ -98,7 +98,7 @@ function draw_tanggal_penting(id_outlet){
 function put_tanggal_penting_into_table(activity){
     let tr =    `<tr style="background-color: #FFFFFF;">
                     <td style="text-align:left; cursor: pointer;" data-toggle="tooltip" data-placement="top" title="click to view detail"
-                        data-id="${activity.ID_DETAIL_ACTIVITY}" onclick="view_detail_activity(this)">
+                        data-id="${activity.ID_DETAIL_ACTIVITY}" onclick="view_progress_activity(this)">
                         ${activity.NAMA_AKTIFITAS}
                     </td>
                     <td>${activity.TANGGAL_START}</td>
@@ -176,7 +176,33 @@ function add_activity_form_check(){
     }
 }
 
+function view_progress_activity(activity_el){
+    var detail 
+
+    for(let i = 0; i < DETAIL_ACTIVITY.length; i++){
+        if(DETAIL_ACTIVITY[i].ID_DETAIL_ACTIVITY == $(activity_el).data('id')){
+            detail = DETAIL_ACTIVITY[i]
+            break
+        }
+    }
+
+    if(detail.STATUS == 0){
+        $('#progress_status').val('Belum dimulai')
+    } else if(detail.STATUS == 1){
+        $('#progress_status').val('On progress')
+    } else if(detail.STATUS == 2){
+        $('#progress_status').val('Terlambat')
+    } else if(detail.STATUS == 3){
+        $('#progress_status').val('Selesai')
+    }
+
+    $('#progress_nama_activity').val(detail.NAMA_AKTIFITAS)
+    $('#progress-detail-btn').data('id', detail.ID_DETAIL_ACTIVITY)
+    $('#progress-activity-modal').modal('show')
+}
+
 function view_detail_activity(activity_el){
+    $('#progress-activity-modal').modal('hide')
     var detail 
 
     for(let i = 0; i < DETAIL_ACTIVITY.length; i++){
@@ -200,8 +226,8 @@ function view_detail_activity(activity_el){
 function clear_timetable(id_outlet){
     let x = 0
 
-    for(let i = 0; i < DETAIL_ACTIVITY.length; i++){
-        if(DETAIL_ACTIVITY[i].ID_OUTLET == id_outlet && DETAIL_ACTIVITY[i].FLAG == 0){
+    for(let i = 0; i < CATEGORY_ACTIVITY.length; i++){
+        if(CATEGORY_ACTIVITY[i].ID_OUTLET == id_outlet){
             x++
         }
     }
@@ -236,4 +262,9 @@ function clear_tanggal_penting(id_outlet){
         
         $('#tanggal-penting-tbody').append(tr)
     }
+}
+
+function reschedule_activity(){
+    $('#progress-activity-modal').modal('hide')
+    $('#reschedule-modal').modal('show')
 }

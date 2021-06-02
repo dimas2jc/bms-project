@@ -60,8 +60,8 @@
                                     <table class="table table-bordered">
                                         <thead class="bg-warning">
                                             <tr>
-                                                <th rowspan="2">Activities</th>
-                                                <th rowspan="2">Durasi</th>
+                                                <th rowspan="3">Activities</th>
+                                                <th rowspan="3">Durasi</th>
                                                 <th colspan="2">
                                                     <i class="fas fa-lg fa-caret-left" style="cursor: pointer;" data-toggle="tooltip" data-placement="right" title="Prev year"></i>
                                                 </th>
@@ -76,6 +76,13 @@
                                             <tr>
                                                 @for ($i = 1; $i <= 12; $i++)
                                                     <th colspan="4">{{ date('M', strtotime(date('Y') . "-" . $i . "-01")) }}</th>
+                                                @endfor
+                                            </tr>
+                                            <tr>
+                                                @for ($i = 1; $i <= 12; $i++)
+                                                    @for ($j = 1; $j <= 4; $j++)
+                                                        <th>{{ $j }}</th>
+                                                    @endfor
                                                 @endfor
                                             </tr>
                                         </thead>
@@ -111,8 +118,11 @@
             <div class="modal fade" id="add-activity-modal" tabindex="-1" data-backdrop="static">
                 <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
                     <div class="modal-content">
-                        <div class="modal-header d-flex justify-content-center">
+                        <div class="modal-header">
                             <h5 class="modal-title">Tambah Activity</h5>
+                            <button type="button" class="close" data-dismiss="modal">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                         </div>
                         <div class="modal-body">
                             <form action="{{ url('/admin/activity') }}" method="post" onsubmit="return add_activity_form_check()">
@@ -176,10 +186,12 @@
                             </span>
 
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-sm btn-danger btn-rounded px-3" data-dismiss="modal">
+                                <button type="button" class="btn btn-sm btn-light btn-rounded px-3" data-dismiss="modal">
+                                    <i class="fas fa-times-circle mr-2"></i>
                                     Cancel
                                 </button>
                                 <button type="submit" class="btn btn-sm btn-primary btn-rounded px-3">
+                                    <i class="fas fa-save mr-2"></i>
                                     Save
                                 </button>
                             </div>
@@ -190,12 +202,115 @@
             </div>
             <!-- ./Add timeplan activity modal -->
             
+            <!-- Progress activity modal -->
+            <div class="modal fade" id="progress-activity-modal" tabindex="-1" data-backdrop="static">
+                <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Progress Activity</h5>
+                            <button type="button" class="close" data-dismiss="modal">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label>Nama Activity</label>
+                                <input type="text" id="progress_nama_activity" class="form-control" readonly style="cursor: not-allowed;">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Status</label>
+                                <input type="text" id="progress_status" class="form-control" readonly style="cursor: not-allowed;">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Progress</label>
+                                <div class="progress" style="height: 20px;">
+                                    <div class="progress-bar bg-light" role="progressbar" style="width: 100%; color: #000;">0%</div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Deadline</label>
+                                <div class="progress" style="height: 20px;">
+                                    <div class="progress-bar bg-warning" role="progressbar" style="width: 75%">8 hari lagi</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-sm btn-light btn-rounded px-3" data-dismiss="modal">
+                                <i class="fas fa-times-circle mr-2"></i>
+                                Close
+                            </button>
+                            <button type="button" id="progress-detail-btn" onclick="view_detail_activity(this)" class="btn btn-sm btn-secondary btn-rounded px-3" data-id="">
+                                <i class="fas fa-info-circle mr-2"></i>
+                                Detail
+                            </button>
+                            <button onclick="reschedule_activity()" type="button" class="btn btn-sm btn-secondary btn-rounded px-3">
+                                <i class="fas fa-calendar-alt mr-2"></i>
+                                Reschedule
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ./Progress activity modal -->
+            
+            <!-- Reschedule activity modal -->
+            <div class="modal fade" id="reschedule-modal" tabindex="-1" data-backdrop="static">
+                <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Reschedule Activity</h5>
+                            <button type="button" class="close" data-dismiss="modal">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label>Nama Activity</label>
+                                <input type="text" id="reschedule_nama_activity" class="form-control" readonly style="cursor: not-allowed;">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Tanggal Mulai</label>
+                                <input type="date" id="reschedule_tanggal_mulai" class="form-control">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Tanggal Selesai</label>
+                                <input type="date" id="reschedule_tanggal_selesai" class="form-control">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Durasi</label>
+                                <input type="number" id="reschedule_durasi" class="form-control" readonly style="cursor: not-allowed;">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-sm btn-light btn-rounded px-3" data-dismiss="modal">
+                                <i class="fas fa-times-circle mr-2"></i>
+                                Cancel
+                            </button>
+                            <button type="button" class="btn btn-sm btn-secondary btn-rounded px-3" data-dismiss="modal">
+                                <i class="fas fa-save mr-2"></i>
+                                Save
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ./Reschedule activity modal -->
+
             <!-- Detail activity modal -->
             <div class="modal fade" id="detail-activity-modal" tabindex="-1" data-backdrop="static">
                 <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
                     <div class="modal-content">
-                        <div class="modal-header d-flex justify-content-center">
+                        <div class="modal-header">
                             <h5 class="modal-title">Detail Activity</h5>
+                            <button type="button" class="close" data-dismiss="modal">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                         </div>
                         <div class="modal-body">
 
@@ -234,11 +349,12 @@
                                 <input type="text" id="detail_pic" class="form-control" readonly style="cursor: not-allowed;">
                             </div>
 
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-sm btn-secondary btn-rounded px-3" data-dismiss="modal">
-                                    Close
-                                </button>
-                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-sm btn-light btn-rounded px-3" data-dismiss="modal">
+                                <i class="fas fa-times-circle mr-2"></i>
+                                Close
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -254,6 +370,7 @@
         const DETAIL_ACTIVITY = {!! json_encode($detail_activity) !!}
         const OUTLET = {!! json_encode($outlet) !!}
         const TIMEPLAN = {!! json_encode($timeplan) !!}
+        console.log(DETAIL_ACTIVITY)
     </script>
     <script src="{{ asset('/assets/admin/js/timetable.js') }}"></script>
     
