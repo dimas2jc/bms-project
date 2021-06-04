@@ -16,7 +16,7 @@ class CreateProgressTable extends Migration
         Schema::create('progress', function (Blueprint $table) {
             $table->string('ID_PROGRESS', 32)->primary();
             $table->string('ID_DETAIL_ACTIVITY', 32)->index('MEMILIKI3_FK');
-            $table->string('PROGRESS', 10);
+            $table->string('PROGRESS', 10)->nullable();
             $table->string('KETERANGAN', 300)->nullable();
             $table->string('FILE', 100)->nullable();
             $table->timestamps();
