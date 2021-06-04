@@ -21,6 +21,7 @@ $(function(){
     let tahun_aktif = $('#tahun-aktif').val()
 })
 
+// Switch antar outlet, mentrigger perubahan data pada timetable
 function switch_outlet(select_outlet){
     let id_outlet = $(select_outlet).val()
     $('#input_category').empty()
@@ -46,6 +47,7 @@ function switch_outlet(select_outlet){
     draw_tanggal_penting(id_outlet)
 }
 
+// Trigger function untuk menambahkan category ke dalam timetable
 function draw_category(id_outlet){
     for(let i = 0; i < CATEGORY_ACTIVITY.length; i++){
         if(CATEGORY_ACTIVITY[i].ID_OUTLET == id_outlet){
@@ -55,6 +57,7 @@ function draw_category(id_outlet){
     }
 }
 
+// Menambahkan tiap-tiap kategori ke timetable
 function put_category_into_table(category_name){
     let tr =    `<tr style="background-color: #F4F4F7;">
                     <td style="text-align:left;">${category_name}</td>
@@ -65,6 +68,7 @@ function put_category_into_table(category_name){
     $('#timetable-tbody').append(tr)
 }
 
+// Trigger function menambahkan activity ke timetable
 function draw_activity(id_category){
     for(let i = 0; i < DETAIL_ACTIVITY.length; i++){
         if(DETAIL_ACTIVITY[i].ID_CATEGORY == id_category && DETAIL_ACTIVITY[i].FLAG == 0){
@@ -73,6 +77,7 @@ function draw_activity(id_category){
     }
 }
 
+// Menambahkan activity ke timetable
 function put_activity_into_table(activity){
     let empty_td = `<td></td>`
     let tr =    `<tr style="background-color: #FFFFFF;">
@@ -80,13 +85,14 @@ function put_activity_into_table(activity){
                         data-id="${activity.ID_DETAIL_ACTIVITY}" onclick="view_progress_activity(this)">
                         ${activity.NAMA_AKTIFITAS}
                     </td>
-                    <td>${activity.DURASI.d} Hari</td>
+                    <td>${activity.DURASI.days} Hari</td>
                     ${empty_td.repeat(48)}
                 </tr>
                 `
     $('#timetable-tbody').append(tr)
 }
 
+// Trigger function menambahkan activity ke table tanggal-tanggal penting
 function draw_tanggal_penting(id_outlet){
     for(let i = 0; i < DETAIL_ACTIVITY.length; i++){
         if(DETAIL_ACTIVITY[i].ID_OUTLET == id_outlet && DETAIL_ACTIVITY[i].FLAG == 1){
@@ -95,6 +101,7 @@ function draw_tanggal_penting(id_outlet){
     }
 }
 
+// Menambahkan activity ke table tanggal-tanggal penting
 function put_tanggal_penting_into_table(activity){
     let tr =    `<tr style="background-color: #FFFFFF;">
                     <td style="text-align:left; cursor: pointer;" data-toggle="tooltip" data-placement="top" title="click to view detail"
@@ -108,6 +115,10 @@ function put_tanggal_penting_into_table(activity){
     $('#tanggal-penting-tbody').append(tr)
 }
 
+/**
+ * Menghitung durasi antara start date dan end date
+ * pada form input activity
+ */
 function calculate_activity_duration(){
     let start_date = $('#input_tanggal_mulai').val()
     let end_date = $('#input_tanggal_selesai').val()
@@ -131,6 +142,10 @@ function calculate_activity_duration(){
     }
 }
 
+/**
+ * Melakukan check pada form input activity
+ * memastikan semua input form yang dibutuhkan terisi
+ */
 function add_activity_form_check(){
     let form_status = 1
     let category = $('#input_category').val()
@@ -176,6 +191,7 @@ function add_activity_form_check(){
     }
 }
 
+// Modal progress activity
 function view_progress_activity(activity_el){
     var detail 
 
@@ -198,9 +214,11 @@ function view_progress_activity(activity_el){
 
     $('#progress_nama_activity').val(detail.NAMA_AKTIFITAS)
     $('#progress-detail-btn').data('id', detail.ID_DETAIL_ACTIVITY)
+    $('#progress-reschedule-btn').data('id', detail.ID_DETAIL_ACTIVITY)
     $('#progress-activity-modal').modal('show')
 }
 
+// Modal detail activity
 function view_detail_activity(activity_el){
     $('#progress-activity-modal').modal('hide')
     var detail 
@@ -223,6 +241,91 @@ function view_detail_activity(activity_el){
     $('#detail-activity-modal').modal('show')
 }
 
+// Modal reschedule activity
+function reschedule_activity(activity_el){
+    $('#progress-activity-modal').modal('hide')
+    var detail 
+
+    for(let i = 0; i < DETAIL_ACTIVITY.length; i++){
+        if(DETAIL_ACTIVITY[i].ID_DETAIL_ACTIVITY == $(activity_el).data('id')){
+            detail = DETAIL_ACTIVITY[i]
+            break
+        }
+    }
+    $('#reschedule-id-detail-activity').val(detail.ID_DETAIL_ACTIVITY)
+    $('#reschedule-nama-activity').val(detail.NAMA_AKTIFITAS)
+    $('#reschedule-tanggal-mulai').val(detail.TANGGAL_START)
+    $('#reschedule-tanggal-selesai').val(detail.TANGGAL_END)
+    
+    let durasi = calculate_date_range(
+        $('#reschedule-tanggal-mulai').val(),
+        $('#reschedule-tanggal-selesai').val()
+    )
+
+    $('#reschedule-durasi').val(`${durasi} Hari`)
+    $('#reschedule-modal').modal('show')
+}
+
+// Menghitung selisih antara dua tanggal
+function calculate_date_range(start_date, end_date){
+    let result = 'yooooo'
+
+    if(start_date != '' && end_date != ''){
+        start_date = new Date(start_date)
+        end_date = new Date(end_date)
+
+        let diff_in_time = end_date.getTime() - start_date.getTime()
+        let diff_in_days = diff_in_time / (1000 * 3600 * 24)
+        durasi = diff_in_days
+
+        if(diff_in_days < 0){
+            result = 'Tanggal mulai tidak boleh melebihi tanggal selesai'
+        } else {
+            result = diff_in_days
+        }
+
+    } else {
+        result = 'Tentukan tanggal mulai dan tanggal selesai'
+    }
+
+    return result
+}
+
+// Check perubahan tanggal mulai dan tanggal selesai pada modal reschedule
+function reschedule_date_change(){
+    let start_date = $('#reschedule-tanggal-mulai').val()
+    let end_date = $('#reschedule-tanggal-selesai').val()
+    let durasi = calculate_date_range(start_date, end_date)
+    $('#reschedule-error-msg').css('display', 'none')
+    if(durasi >= 0){
+        $('#reschedule-durasi').val(`${durasi} Hari`)
+    } else {
+        $('#reschedule-durasi').val(durasi)
+    }
+}
+
+function reschedule_form_check(){
+    let form_status = 1
+    let start_date = $('#reschedule-tanggal-mulai').val()
+    let end_date = $('#reschedule-tanggal-selesai').val()
+    let durasi = calculate_date_range(start_date, end_date)
+
+    if(durasi >= 0){
+        form_status = 1
+    } else {
+        $('#reschedule-error-msg').css('display', 'block')
+        form_status = 0
+    }
+
+    if(form_status == 1){
+        return true
+    } else {
+        return false
+    }
+
+}
+
+// Menghapus semua isi timetable
 function clear_timetable(id_outlet){
     let x = 0
 
@@ -244,6 +347,7 @@ function clear_timetable(id_outlet){
 
 }
 
+// Menghapus semua isi tabel tanggal-tanggal penting
 function clear_tanggal_penting(id_outlet){
     let x = 0
 
@@ -262,9 +366,4 @@ function clear_tanggal_penting(id_outlet){
         
         $('#tanggal-penting-tbody').append(tr)
     }
-}
-
-function reschedule_activity(){
-    $('#progress-activity-modal').modal('hide')
-    $('#reschedule-modal').modal('show')
 }

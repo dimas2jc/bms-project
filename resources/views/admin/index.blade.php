@@ -246,7 +246,7 @@
                                 <i class="fas fa-info-circle mr-2"></i>
                                 Detail
                             </button>
-                            <button onclick="reschedule_activity()" type="button" class="btn btn-sm btn-secondary btn-rounded px-3">
+                            <button type="button" id="progress-reschedule-btn" onclick="reschedule_activity(this)" class="btn btn-sm btn-secondary btn-rounded px-3" data-id="">
                                 <i class="fas fa-calendar-alt mr-2"></i>
                                 Reschedule
                             </button>
@@ -259,7 +259,9 @@
             <!-- Reschedule activity modal -->
             <div class="modal fade" id="reschedule-modal" tabindex="-1" data-backdrop="static">
                 <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
-                    <div class="modal-content">
+                    <form action="{{ url('/admin/activity/reschedule') }}" method="POST" onsubmit="return reschedule_form_check()" class="modal-content">
+                        @csrf
+
                         <div class="modal-header">
                             <h5 class="modal-title">Reschedule Activity</h5>
                             <button type="button" class="close" data-dismiss="modal">
@@ -267,24 +269,28 @@
                             </button>
                         </div>
                         <div class="modal-body">
+
+                            <input type="hidden" id="reschedule-id-detail-activity" name="id_detail_activity" required readonly>
+
                             <div class="form-group">
                                 <label>Nama Activity</label>
-                                <input type="text" id="reschedule_nama_activity" class="form-control" readonly style="cursor: not-allowed;">
+                                <input type="text" id="reschedule-nama-activity" class="form-control" readonly style="cursor: not-allowed;">
                             </div>
                             
                             <div class="form-group">
                                 <label>Tanggal Mulai</label>
-                                <input type="date" id="reschedule_tanggal_mulai" class="form-control">
+                                <input type="date" onchange="reschedule_date_change()" id="reschedule-tanggal-mulai" name="tanggal_mulai" class="form-control" required>
                             </div>
                             
                             <div class="form-group">
                                 <label>Tanggal Selesai</label>
-                                <input type="date" id="reschedule_tanggal_selesai" class="form-control">
+                                <input type="date" onchange="reschedule_date_change()" id="reschedule-tanggal-selesai" name="tanggal_selesai" class="form-control" required>
                             </div>
                             
                             <div class="form-group">
                                 <label>Durasi</label>
-                                <input type="number" id="reschedule_durasi" class="form-control" readonly style="cursor: not-allowed;">
+                                <input type="text" id="reschedule-durasi" class="form-control" readonly style="cursor: not-allowed;">
+                                <small id="reschedule-error-msg" class="text-danger" style="display: none">Periksa kembali tanggal mulai dan tanggal selesai yang anda tentukan</small>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -292,12 +298,12 @@
                                 <i class="fas fa-times-circle mr-2"></i>
                                 Cancel
                             </button>
-                            <button type="button" class="btn btn-sm btn-secondary btn-rounded px-3" data-dismiss="modal">
+                            <button type="submit" class="btn btn-sm btn-secondary btn-rounded px-3">
                                 <i class="fas fa-save mr-2"></i>
                                 Save
                             </button>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
             <!-- ./Reschedule activity modal -->

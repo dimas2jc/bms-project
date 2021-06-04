@@ -18,4 +18,3 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// Route::post('/admin/tambah-pic', [App\Http\Controllers\AdminController::class, 'storePIC']);

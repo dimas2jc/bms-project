@@ -70,9 +70,10 @@ Route::group(['middleware' => ['auth']],function(){
 
 
     // Activity
+    Route::get('/admin/activity/test', [ActivityController::class, 'activity_timeline']);
     Route::post('/admin/activity', [ActivityController::class, 'store']);
-    Route::put('/admin/activity', [ActivityController::class, 'update']);
-
+    Route::post('/admin/activity/reschedule', [ActivityController::class, 'reschedule']);
+    
 
     /* Investor */
     Route::get('/investor/calendar', [InvestorController::class, 'calendar'])->name('investor');

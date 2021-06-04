@@ -58,8 +58,66 @@ class ActivityController extends Controller
         return redirect('/admin/timetable')->with('toast_msg_success', 'Activity berhasil ditambahkan');
     }
     
-    public function update(Request $request)
+    public function reschedule(Request $request)
     {
-        dd($request->all());
+        $id_detail_activity = $request->id_detail_activity;
+        $tanggal_mulai = $request->tanggal_mulai;
+        $tanggal_selesai = $request->tanggal_selesai;
+
+        // Insert timeplan
+        $timeplan = new Timeplan;
+        $timeplan->ID_TIMEPLAN = Uuid::uuid4()->getHex();
+        $timeplan->ID_DETAIL_ACTIVITY = $id_detail_activity;
+        $timeplan->TANGGAL_START = $tanggal_mulai;
+        $timeplan->TANGGAL_END = $tanggal_selesai;
+        $timeplan->save();
+
+        return redirect('/admin/timetable')->with('toast_msg_success', 'Reschedule berhasil');
+    }
+
+    public function activity_timeline()
+    {
+        $activity = DetailActivity::orderBy('created_at', 'ASC')->get()->toArray();
+        $timeplan = Timeplan::orderBy('created_at', 'ASC')->get()->toArray();
+
+        for($i = 0; $i < count($activity); $i++){
+            for($j = 0; $j < count($timeplan); $j++){
+                if($timeplan[$j]['ID_DETAIL_ACTIVITY'] == $activity[$i]['ID_DETAIL_ACTIVITY']){
+                    $activity[$i]['TIMEPLAN'] = $timeplan[$j];
+                    $activity[$i]['TIMEPLAN']['TAHUN'] = $this->get_activity_years(
+                        $timeplan[$j]['TANGGAL_START'],
+                        $timeplan[$j]['TANGGAL_END']
+                    );
+                }
+            }
+        }
+
+        dd($activity);
+    }
+
+    private function get_activity_years($start_date, $end_date)
+    {
+        $result = [];
+        $start_date = date('Y', strtotime($start_date));
+        $end_date = date('Y', strtotime($end_date));
+
+        for($i = (int)$start_date; $i <= (int)$end_date; $i++){
+            array_push($result, $i);
+        }
+
+        return $result;
+    }
+    
+    private function get_activity_weeks($start_date, $end_date)
+    {
+        $result = [];
+        $start_date = date('Y', strtotime($start_date));
+        $end_date = date('Y', strtotime($end_date));
+
+        for($i = (int)$start_date; $i <= (int)$end_date; $i++){
+            array_push($result, $i);
+        }
+
+        return $result;
     }
 }
