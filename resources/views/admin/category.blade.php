@@ -2,7 +2,7 @@
 @extends('layout.default')
 @section('title', 'Daftar Kategori')
 @section('extra-css')
-    <link rel="stylesheet" href="{{ asset('assets/datatable/dataTable/datatables.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/datatables/css/jquery.dataTables.min.css') }}">
     <link rel="stylesheet" href="{{ asset('metroadmin/vendor/select2/css/select2.min.css') }}">
 @endsection
 
@@ -39,7 +39,7 @@
                 </div><hr>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table id="user" class="table table-responsive-stack">
+                        <table id="user" class="table table-striped table-responsive-sm">
                             <thead class="thead-dark" align="center">
                                 <th scope="col">No.</th>
                                 <th scope="col">Kategori</th>
@@ -150,7 +150,7 @@
 
 
 @section('extra-script')
-    <script src="{{ asset('assets/datatable/dataTable/datatables.min.js') }}"></script>
+    <script src="{{ asset('assets/datatables/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('assets/datatable/dataTable/Sorting-1.10.20/any-number-sorting.js') }}"></script>
     <script src="{{ asset('metroadmin/vendor/select2/js/select2.min.js') }}"></script>
     <script>

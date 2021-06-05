@@ -2,7 +2,7 @@
 @extends('layout.default')
 @section('title', 'Daftar Investor')
 @section('extra-css')
-    <link rel="stylesheet" href="{{ asset('assets/datatable/dataTable/datatables.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/datatables/css/jquery.dataTables.min.css') }}">
     <style>
         @media screen and (max-width: 599px) {
             .btn-edit {
@@ -59,7 +59,7 @@
                 </div><hr>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table id="user" class="table table-responsive-stack">
+                        <table id="user" class="table table-striped table-responsive-sm">
                             <thead class="thead-dark" align="center">
                                 <th scope="col">Nama</th>
                                 <th scope="col">Username</th>
@@ -223,17 +223,12 @@
 
 
 @section('extra-script')
-    <script src="{{ asset('assets/datatable/dataTable/datatables.min.js') }}"></script>
+    <script src="{{ asset('assets/datatables/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('assets/datatable/dataTable/Sorting-1.10.20/any-number-sorting.js') }}"></script>
     <script>
         $(document).ready(function(){
             const table = document.getElementById('user');
-            $(table).DataTable({
-                "order": [[ 0, "desc" ]],
-                "columnDefs": [
-                    { "type": "any-number", "targets": 0 }
-                ],
-            });
+            $(table).DataTable();
         });
     </script>
 @endsection
