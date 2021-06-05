@@ -37,10 +37,11 @@
                             <label class="mr-3">Select Outlet</label>
                         </div>
                         <div class="col-md-4 col-sm-8">
-                            <select class="form-control" name="outlet">
-                                @for ($i = 0; $i < count($outlet); $i++)
-                                    <option @if($i == 0) selected @endif value="{{ $outlet[$i]['ID_OUTLET'] }}">{{ $outlet[$i]['NAMA'] }}</option>
-                                @endfor
+                            <select class="form-control" name="outlet" id="outlet">
+                                <option selected disabled>Pilih Outlet..</option>
+                                @foreach ($outlet as $outlet)
+                                    <option value="{{ $outlet['ID_OUTLET'] }}">{{ $outlet['NAMA'] }}</option>
+                                @endforeach
                             </select>
                         </div>
                     </div>
@@ -49,10 +50,8 @@
                             <label class="mr-3">Select Category</label>
                         </div>
                         <div class="col-md-4 col-sm-8">
-                            <select class="form-control" name="category" required>
-                                @for ($i = 0; $i < count($category_activity); $i++)
-                                    <option @if($i == 0) selected @endif value="{{ $category_activity[$i]['ID_CATEGORY'] }}">{{ $category_activity[$i]['NAMA'] }}</option>
-                                @endfor
+                            <select class="form-control" name="category" id="category">
+                                <option selected disabled>Pilih Kategori..</option>
                                 
                             </select>
                         </div>
@@ -130,9 +129,8 @@
     <script>
         const CATEGORY_ACTIVITY = {!! json_encode($category_activity) !!}
         const DETAIL_ACTIVITY = {!! json_encode($detail_activity) !!}
-        const OUTLET = {!! json_encode($outlet) !!}
-        const TIMEPLAN = {!! json_encode($timeplan) !!}
         const urlUpdate = "{{url('admin/calendar/update')}}"
+        const urlCalendar = "{{url('admin/calendar')}}"
         const token = $('meta[name="csrf-token"]').attr('content')
         console.log(DETAIL_ACTIVITY)
     </script>

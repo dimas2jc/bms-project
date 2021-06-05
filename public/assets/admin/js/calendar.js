@@ -2,14 +2,16 @@
     "use strict";
     // Convert Timeplan
     const data = [];
-    for(let x = 0; x < DETAIL_ACTIVITY.length; x++){
-        data[x] = {
-            title: DETAIL_ACTIVITY[x].NAMA_AKTIFITAS,
-            start: DETAIL_ACTIVITY[x].TANGGAL_START,
-            end: DETAIL_ACTIVITY[x].TANGGAL_END,
-            id: DETAIL_ACTIVITY[x].ID_DETAIL_ACTIVITY
+    if(DETAIL_ACTIVITY != null){
+        for(let x = 0; x < DETAIL_ACTIVITY.length; x++){
+            data[x] = {
+                title: DETAIL_ACTIVITY[x].NAMA_AKTIFITAS,
+                start: DETAIL_ACTIVITY[x].TANGGAL_START,
+                end: DETAIL_ACTIVITY[x].TANGGAL_END,
+                id: DETAIL_ACTIVITY[x].ID_DETAIL_ACTIVITY
+            };
         };
-    };
+    }
 
     // Init Modal Update
     const modalUpdate = '<div class="form-group">'+
@@ -50,6 +52,7 @@
             i = e('<form action="'+urlUpdate+'" id="form-update" method="POST" enctype="multipart/form-data"></form>');
         i.append("<input type='hidden' name='id' value='"+t.id+"'>"),
         i.append("<input type='hidden' name='_token' value='"+token+"'>"),
+        i.append("<input type='hidden' name='category' value='"+CATEGORY_ACTIVITY.ID_CATEGORY+"'>")
         i.append(modalUpdate),
         o.$modal.find(".modal-footer").hide(),
         i.append(footer),
@@ -140,4 +143,36 @@ function(e) {
 
 $(function(){
     $('select').select2();
+
+    //ambil kategori ketika outlet dipilih
+    $('#outlet').change(function(){
+        $("#category").empty();
+        var outlet = $(this).val();
+        $.ajax({
+            type: 'GET',
+            url: "/admin/getCategory/"+outlet,
+            success: function (results) {
+                if (results.success === true) {
+                    $("#category").empty();
+                    var option = new Option("Pilih Kategori..", true);
+                    $("#category").append(option);
+                    results.data.forEach(addOption)
+                    function addOption(item, index, arr){
+                        let text = item.NAMA;
+                        let val = item.ID_CATEGORY;
+                        var o = new Option(text, val);
+                        $(o).html(text);
+                        $("#category").append(o);
+                        $("#category").select2();
+                    }
+                }
+            }
+        });
+    });
+
+    //menampilkan calendar sesuai category
+    $('#category').change(function(){
+        var category = $(this).val();
+        window.location.replace(urlCalendar+"/"+category);
+    })
 });

@@ -186,23 +186,9 @@ class AdminController extends Controller
     public function calendar()
     {
         $outlet = Outlet::all()->toArray();
-        $category_activity = CategoryActivity::orderBy('created_at', 'ASC')->get()->toArray();
-        $detail_activity = DetailActivity::orderBy('created_at', 'ASC')->get()->toArray();
-        $timeplan = Timeplan::orderBy('created_at', 'ASC')->get()->toArray();
-
-        for($i = 0; $i < count($detail_activity); $i++){
-            for($j = 0; $j < count($timeplan); $j++){
-                if($timeplan[$j]['ID_DETAIL_ACTIVITY'] == $detail_activity[$i]['ID_DETAIL_ACTIVITY']){
-                    $tanggal_mulai = $timeplan[$j]['TANGGAL_START'];
-                    $tanggal_selesai = $timeplan[$j]['TANGGAL_END'];
-                    $durasi = date_diff(date_create($tanggal_mulai), date_create($tanggal_selesai));
-
-                    $detail_activity[$i]['TANGGAL_START'] = date('Y-m-d', strtotime($tanggal_mulai));
-                    $detail_activity[$i]['TANGGAL_END'] = date('Y-m-d', strtotime($tanggal_selesai));
-                    $detail_activity[$i]['DURASI'] = $durasi;
-                }
-            }
-        }
+        $category_activity = null;
+        $detail_activity = null;
+        $timeplan = null;
 
         return view('admin.calendar', compact('category_activity', 'detail_activity', 'outlet', 'timeplan'));
     }
@@ -225,6 +211,37 @@ class AdminController extends Controller
             'FILE' => $nama_file
         ]);
 
-        return redirect('admin/calendar');
+        return redirect('admin/calendar/'.$request->category);
+    }
+
+    public function getCategory($outlet)
+    {
+        $data = CategoryActivity::where('ID_OUTLET', '=', $outlet)->get();
+
+        return response()->json(["success" => true, "data" => $data]);
+    }
+
+    public function getCalendar($id_category)
+    {
+        $outlet = Outlet::all()->toArray();
+        $category_activity = CategoryActivity::orderBy('created_at', 'ASC')->first()->toArray();
+        $detail_activity = DetailActivity::where('ID_CATEGORY', '=', $id_category)->orderBy('created_at', 'ASC')->get()->toArray();
+        $timeplan = Timeplan::orderBy('created_at', 'ASC')->get()->toArray();
+
+        for($i = 0; $i < count($detail_activity); $i++){
+            for($j = 0; $j < count($timeplan); $j++){
+                if($timeplan[$j]['ID_DETAIL_ACTIVITY'] == $detail_activity[$i]['ID_DETAIL_ACTIVITY']){
+                    $tanggal_mulai = $timeplan[$j]['TANGGAL_START'];
+                    $tanggal_selesai = $timeplan[$j]['TANGGAL_END'];
+                    $durasi = date_diff(date_create($tanggal_mulai), date_create($tanggal_selesai));
+
+                    $detail_activity[$i]['TANGGAL_START'] = date('Y-m-d', strtotime($tanggal_mulai));
+                    $detail_activity[$i]['TANGGAL_END'] = date('Y-m-d', strtotime($tanggal_selesai));
+                    $detail_activity[$i]['DURASI'] = $durasi;
+                }
+            }
+        }
+
+        return view('admin.calendar', compact('category_activity', 'detail_activity', 'outlet', 'timeplan'));
     }
 }

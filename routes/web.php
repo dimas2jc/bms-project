@@ -63,8 +63,8 @@ Route::group(['middleware' => ['auth']],function(){
     Route::post('admin/edit-kategori', [AdminController::class, 'editCategory']);
 
     Route::post('admin/calendar/update', [AdminController::class, 'updateCalendar']);
-
-
+    Route::get('admin/getCategory/{outlet}', [AdminController::class, 'getCategory']);
+    Route::get('admin/calendar/{id_category}', [AdminController::class, 'getCalendar']);
 
 
 
