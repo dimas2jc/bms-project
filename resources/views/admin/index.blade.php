@@ -376,9 +376,12 @@
         const DETAIL_ACTIVITY = {!! json_encode($detail_activity) !!}
         const OUTLET = {!! json_encode($outlet) !!}
         const TIMEPLAN = {!! json_encode($timeplan) !!}
+        const BASE_URL = "{{ url('/') }}"
         console.log(DETAIL_ACTIVITY)
+        console.log(BASE_URL)
     </script>
     <script src="{{ asset('/assets/admin/js/timetable.js') }}"></script>
+    <script src="{{ asset('/assets/admin/js/timeline.js') }}"></script>
     
     @if (session('toast_msg_success'))
         <script defer>

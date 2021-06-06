@@ -84,7 +84,12 @@ class ActivityController extends Controller
             for($j = 0; $j < count($timeplan); $j++){
                 if($timeplan[$j]['ID_DETAIL_ACTIVITY'] == $activity[$i]['ID_DETAIL_ACTIVITY']){
                     $activity[$i]['TIMEPLAN'] = $timeplan[$j];
-                    $activity[$i]['TIMEPLAN']['TAHUN'] = $this->get_activity_years(
+                    $activity[$i]['TIMEPLAN']['TIMELINE']['YEARS'] = $this->get_activity_years(
+                        $timeplan[$j]['TANGGAL_START'],
+                        $timeplan[$j]['TANGGAL_END']
+                    );
+                    $activity[$i]['TIMEPLAN']['TIMELINE']['WEEKS'] = $this->get_activity_weeks(
+                        $activity[$i]['TIMEPLAN']['TIMELINE']['YEARS'],
                         $timeplan[$j]['TANGGAL_START'],
                         $timeplan[$j]['TANGGAL_END']
                     );
@@ -92,7 +97,8 @@ class ActivityController extends Controller
             }
         }
 
-        dd($activity);
+        // dd($activity);
+        return $activity;
     }
 
     private function get_activity_years($start_date, $end_date)
@@ -108,16 +114,38 @@ class ActivityController extends Controller
         return $result;
     }
     
-    private function get_activity_weeks($start_date, $end_date)
+    private function get_activity_weeks($years, $start_date, $end_date)
     {
         $result = [];
-        $start_date = date('Y', strtotime($start_date));
-        $end_date = date('Y', strtotime($end_date));
+        $start_date = date('Y-m-d', strtotime($start_date));
+        $end_date = date('Y-m-d', strtotime($end_date));
+        $start_week = date('W', strtotime($start_date));
+        $end_week = date('W', strtotime($end_date));
+        $diff = date_diff(date_create($start_date), date_create($end_date));
 
-        for($i = (int)$start_date; $i <= (int)$end_date; $i++){
-            array_push($result, $i);
+        if(count($years) == 1){
+            for($i = (int)$start_week; $i <= (int)$end_week; $i++){
+                array_push($result, $i);
+            }
+        } else {
+            for($i = 0; $i < count($years); $i++){
+                if($i == 0){
+                    for($j = (int)$start_week; $j <= 48; $j++){
+                        array_push($result, $j);
+                    }
+                } elseif ($i > 0 && $i != count($years) - 1) {
+                    for($j = 1; $j <= 48; $j++){
+                        array_push($result, $j);
+                    }
+                } else {
+                    for($j = 1; $j <= (int)$end_week; $j++){
+                        array_push($result, $j);
+                    }
+                }
+            }
         }
 
         return $result;
+        // return $end_week;
     }
 }

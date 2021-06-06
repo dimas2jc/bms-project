@@ -65,12 +65,10 @@ Route::group(['middleware' => ['auth']],function(){
     Route::post('admin/calendar/update', [AdminController::class, 'updateCalendar']);
     Route::get('admin/getCategory/{outlet}', [AdminController::class, 'getCategory']);
     Route::get('admin/calendar/{id_category}', [AdminController::class, 'getCalendar']);
-
-
-
-
+    
     // Activity
     Route::get('/admin/activity/test', [ActivityController::class, 'activity_timeline']);
+    Route::get('/admin/activity/timeline', [ActivityController::class, 'activity_timeline']);
     Route::post('/admin/activity', [ActivityController::class, 'store']);
     Route::post('/admin/activity/reschedule', [ActivityController::class, 'reschedule']);
     

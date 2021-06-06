@@ -235,7 +235,7 @@ function view_detail_activity(activity_el){
     $('#detail_nama_activity').val(detail.NAMA_AKTIFITAS)
     $('#detail_tanggal_mulai').val(detail.TANGGAL_START)
     $('#detail_tanggal_selesai').val(detail.TANGGAL_END)
-    $('#detail_durasi').val(`${detail.DURASI.d} Hari`)
+    $('#detail_durasi').val(`${detail.DURASI.days} Hari`)
     $('#detail_pic').val(detail.PIC)
 
     $('#detail-activity-modal').modal('show')
