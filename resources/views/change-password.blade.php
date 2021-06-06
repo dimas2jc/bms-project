@@ -21,10 +21,11 @@
 							</div>
                             <div class="form-group">
 								<label><strong>Re-Password</strong></label>
-								<input type="password" class="form-control" id="pass2">
+								<input type="password" class="form-control" oninput="check()" id="pass2" required>
 							</div>
+							<p style="color: red; visibility: hidden" id="alert">Password tidak sama!</p>
 							<div class="text-center">
-								<button type="submit" class="btn btn-primary btn-block simpan">Simpan</button>
+								<button type="submit" class="btn btn-primary btn-block simpan" id="submit" disabled>Simpan</button>
 							</div>
 						</form>
 					</div>
@@ -32,4 +33,19 @@
 			</div>
 		</div>
 	</div>
+
+	<script>
+		function check(){
+			let input = document.getElementById('pass2').value;
+			let password = document.getElementById('pass1').value;
+
+			if(input != password){
+				document.getElementById('alert').style.visibility = "visible";
+			}
+			else{
+				document.getElementById('alert').style.visibility = "hidden";
+				document.getElementById('submit').disabled = false;
+			}
+		}
+	</script>
 @endsection

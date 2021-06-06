@@ -19,8 +19,25 @@ class InvestorController extends Controller
     public function calendar()
     {
         $outlet = Outlet::all()->toArray();
-        $category_activity = CategoryActivity::orderBy('created_at', 'ASC')->get()->toArray();
-        $detail_activity = DetailActivity::orderBy('created_at', 'ASC')->get()->toArray();
+        $category_activity = null;
+        $detail_activity = null;
+        $timeplan = null;
+
+        return view('investor.calendar', compact('category_activity', 'detail_activity', 'outlet', 'timeplan'));
+    }
+
+    public function getCategory($outlet)
+    {
+        $data = CategoryActivity::where('ID_OUTLET', '=', $outlet)->get();
+
+        return response()->json(["success" => true, "data" => $data]);
+    }
+
+    public function getCalendar($id_category)
+    {
+        $outlet = Outlet::all()->toArray();
+        $category_activity = CategoryActivity::orderBy('created_at', 'ASC')->first()->toArray();
+        $detail_activity = DetailActivity::where('ID_CATEGORY', '=', $id_category)->orderBy('created_at', 'ASC')->get()->toArray();
         $timeplan = Timeplan::orderBy('created_at', 'ASC')->get()->toArray();
 
         for($i = 0; $i < count($detail_activity); $i++){

@@ -1,13 +1,14 @@
 ! function(e) {
     "use strict";
-    // Convert Timeplan
+    // Data Timeplan
     const data = [];
     if(DETAIL_ACTIVITY != null){
         for(let x = 0; x < DETAIL_ACTIVITY.length; x++){
             data[x] = {
+                days: DETAIL_ACTIVITY[x].DURASI.days,
                 title: DETAIL_ACTIVITY[x].NAMA_AKTIFITAS,
                 start: DETAIL_ACTIVITY[x].TANGGAL_START,
-                end: DETAIL_ACTIVITY[x].TANGGAL_END,
+                end: moment(DETAIL_ACTIVITY[x].TANGGAL_END).add(1, "days").toDate(),
                 id: DETAIL_ACTIVITY[x].ID_DETAIL_ACTIVITY
             };
         };
