@@ -79,14 +79,60 @@ function draw_activity(id_category){
 
 // Menambahkan activity ke timetable
 function put_activity_into_table(activity){
-    let empty_td = `<td></td>`
-    let tr =    `<tr style="background-color: #FFFFFF;">
+    let tr =    `<tr id="tr_${activity.ID_DETAIL_ACTIVITY}" style="background-color: #FFFFFF;">
                     <td style="text-align:left; cursor: pointer;" data-toggle="tooltip" data-placement="top" title="click to view detail"
                         data-id="${activity.ID_DETAIL_ACTIVITY}" onclick="view_progress_activity(this)">
                         ${activity.NAMA_AKTIFITAS}
                     </td>
-                    <td>${activity.DURASI.days} Hari</td>
-                    ${empty_td.repeat(48)}
+                    <td>${activity.DURASI.days + 1} Hari</td>
+                    <td class="week-1"></td>
+                    <td class="week-2"></td>
+                    <td class="week-3"></td>
+                    <td class="week-4"></td>
+                    <td class="week-5"></td>
+                    <td class="week-6"></td>
+                    <td class="week-7"></td>
+                    <td class="week-8"></td>
+                    <td class="week-9"></td>
+                    <td class="week-10"></td>
+                    <td class="week-11"></td>
+                    <td class="week-12"></td>
+                    <td class="week-13"></td>
+                    <td class="week-14"></td>
+                    <td class="week-15"></td>
+                    <td class="week-16"></td>
+                    <td class="week-17"></td>
+                    <td class="week-18"></td>
+                    <td class="week-19"></td>
+                    <td class="week-20"></td>
+                    <td class="week-21"></td>
+                    <td class="week-22"></td>
+                    <td class="week-23"></td>
+                    <td class="week-24"></td>
+                    <td class="week-25"></td>
+                    <td class="week-26"></td>
+                    <td class="week-27"></td>
+                    <td class="week-28"></td>
+                    <td class="week-29"></td>
+                    <td class="week-30"></td>
+                    <td class="week-31"></td>
+                    <td class="week-32"></td>
+                    <td class="week-33"></td>
+                    <td class="week-34"></td>
+                    <td class="week-35"></td>
+                    <td class="week-36"></td>
+                    <td class="week-37"></td>
+                    <td class="week-38"></td>
+                    <td class="week-39"></td>
+                    <td class="week-40"></td>
+                    <td class="week-41"></td>
+                    <td class="week-42"></td>
+                    <td class="week-43"></td>
+                    <td class="week-44"></td>
+                    <td class="week-45"></td>
+                    <td class="week-46"></td>
+                    <td class="week-47"></td>
+                    <td class="week-48"></td>
                 </tr>
                 `
     $('#timetable-tbody').append(tr)
@@ -134,7 +180,7 @@ function calculate_activity_duration(){
         if(diff_in_days < 0){
             $('#input_durasi').val('Tanggal mulai tidak boleh melebihi tanggal selesai')
         } else {
-            $('#input_durasi').val(`${diff_in_days} Hari`)
+            $('#input_durasi').val(`${diff_in_days + 1} Hari`)
         }
 
     } else {
@@ -235,7 +281,7 @@ function view_detail_activity(activity_el){
     $('#detail_nama_activity').val(detail.NAMA_AKTIFITAS)
     $('#detail_tanggal_mulai').val(detail.TANGGAL_START)
     $('#detail_tanggal_selesai').val(detail.TANGGAL_END)
-    $('#detail_durasi').val(`${detail.DURASI.days} Hari`)
+    $('#detail_durasi').val(`${detail.DURASI.days + 1} Hari`)
     $('#detail_pic').val(detail.PIC)
 
     $('#detail-activity-modal').modal('show')
@@ -281,7 +327,7 @@ function calculate_date_range(start_date, end_date){
         if(diff_in_days < 0){
             result = 'Tanggal mulai tidak boleh melebihi tanggal selesai'
         } else {
-            result = diff_in_days
+            result = diff_in_days + 1
         }
 
     } else {
