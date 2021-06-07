@@ -14,21 +14,6 @@
         };
     }
 
-    // Init Modal Update
-    const modalUpdate = '<div class="form-group">'+
-                            '<label>Dokumen</label><br>'+
-                            '<input type="file" name="file" accept=".pdf, image/*"><br>'+
-                            '<small style="color: red; font-style: italic">Format file .pdf dan gambar</small>'+
-                        '</div>'+
-                        '<div class="form-group">'+
-                            '<label>Keterangan</label>'+
-                            '<textarea name="keterangan" class="form-control input-default"></textarea>'+
-                        '</div>';
-    const footer = '<div class="modal-footer">'+
-                        '<button type="button" class="btn btn-sm btn-light btn-rounded px-3" data-dismiss="modal">Cancel</button>'+
-                        '<button type="submit" class="btn btn-sm btn-primary btn-rounded px-3 save-event">Save</button>'+
-                    '</div>';
-
     var t = function() {
         this.$body = e("body"), 
         this.$modal = e("#event-modal"), 
@@ -48,21 +33,8 @@
         e("#drop-remove").is(":checked") && t.remove()
     }, 
     t.prototype.onEventClick = function(t, n, a) {
-        var o = this,
         
-            i = e('<form action="'+urlUpdate+'" id="form-update" method="POST" enctype="multipart/form-data"></form>');
-        i.append("<input type='hidden' name='id' value='"+t.id+"'>"),
-        i.append("<input type='hidden' name='_token' value='"+token+"'>"),
-        i.append("<input type='hidden' name='category' value='"+CATEGORY_ACTIVITY.ID_CATEGORY+"'>")
-        i.append(modalUpdate),
-        o.$modal.find(".modal-footer").hide(),
-        i.append(footer),
-        o.$modal.modal({
-            backdrop: "static"
-        }),
-        o.$modal.find(".modal-title").after().empty().end().find(".modal-title").append("<strong>"+t.title+"</strong>"),
-        o.$modal.find(".delete-event").hide().end().find(".save-event").hide().end().find(".modal-body").empty().prepend(i).end();
-    }, 
+    },
     t.prototype.onSelect = function(t, n, a) {
         // var o = this;
         // o.$modal.modal({
@@ -87,16 +59,16 @@
         // }), o.$calendarObj.fullCalendar("unselect")
     }, 
     t.prototype.enableDrag = function() {
-        e(this.$event).each(function() {
-            var t = {
-                title: e.trim(e(this).text())
-            };
-            e(this).data("eventObject", t), e(this).draggable({
-                zIndex: 999,
-                revert: !0,
-                revertDuration: 0
-            })
-        })
+    //     e(this.$event).each(function() {
+    //         var t = {
+    //             title: e.trim(e(this).text())
+    //         };
+    //         e(this).data("eventObject", t), e(this).draggable({
+    //             zIndex: 999,
+    //             revert: !0,
+    //             revertDuration: 0
+    //         })
+    //     })
     }, 
     t.prototype.init = function() {
         this.enableDrag();
@@ -151,7 +123,7 @@ $(function(){
         var outlet = $(this).val();
         $.ajax({
             type: 'GET',
-            url: "/admin/getCategory/"+outlet,
+            url: "/investor/getCategory/"+outlet,
             success: function (results) {
                 if (results.success === true) {
                     $("#category").empty();

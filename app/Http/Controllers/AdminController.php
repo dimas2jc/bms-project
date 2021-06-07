@@ -11,6 +11,7 @@ use App\Models\DetailActivity;
 use App\Models\Outlet;
 use App\Models\Timeplan;
 use App\Models\Progress;
+use App\Models\UserLog;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -113,8 +114,9 @@ class AdminController extends Controller
     public function userInvestor()
     {
         $data = User::where('ROLE', '=', "3")->get();
+        $outlet = Outlet::all();
 
-        return view('admin.investor', compact('data'));
+        return view('admin.investor', compact('data', 'outlet'));
     }
 
     public function storeInvestor(Request $request)
@@ -127,6 +129,15 @@ class AdminController extends Controller
             'EMAIL' => $request->email,
             'NO_TELP' => $request->no_telp,
             'ROLE' => 3,
+            'created_at' => Carbon::now()
+        ]);
+
+        $id = User::orderBy('created_at', 'DESC')->first();
+
+        UserLog::insert([
+            'id' => Uuid::uuid4()->getHex(),
+            'user' => $id->ID_USER,
+            'outlet' => $request->outlet,
             'created_at' => Carbon::now()
         ]);
 

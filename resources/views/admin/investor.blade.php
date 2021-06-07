@@ -3,6 +3,7 @@
 @section('title', 'Daftar Investor')
 @section('extra-css')
     <link rel="stylesheet" href="{{ asset('assets/datatables/css/jquery.dataTables.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('/metroadmin/vendor/select2/css/select2.min.css') }}">
     <style>
         @media screen and (max-width: 599px) {
             .btn-edit {
@@ -123,6 +124,15 @@
                             <input type="text" name="no_telp" class="form-control input-default" placeholder="No. Telp" required>
                         </div>
                         <div class="form-group">
+                            <label>Outlet</label>
+                            <select class="form-control" name="outlet" required>
+                                <option selected disabled>Pilih Outlet..</option>
+                                @foreach($outlet as $o)
+                                    <option value="{{$o->ID_OUTLET}}">{{$o->NAMA}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
                             <label>Username (tanpa spasi)</label>
                             <input type="text" name="username" class="form-control input-default" placeholder="Username" required>
                         </div>
@@ -225,10 +235,13 @@
 @section('extra-script')
     <script src="{{ asset('assets/datatables/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('assets/datatable/dataTable/Sorting-1.10.20/any-number-sorting.js') }}"></script>
+    <script src="{{ asset('/metroadmin/vendor/select2/js/select2.min.js') }}"></script>
     <script>
         $(document).ready(function(){
             const table = document.getElementById('user');
             $(table).DataTable();
+
+            $('select').select2();
         });
     </script>
 @endsection

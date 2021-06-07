@@ -16,8 +16,8 @@ class CreateUserLogTable extends Migration
         Schema::create('user_log', function (Blueprint $table) {
             $table->string('id', 32)->primary();
             $table->string('user', 32);
-            $table->string('outlet', 32);
-            $table->string('activity', 32);
+            $table->string('outlet', 32)->nullable();
+            $table->string('activity', 32)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

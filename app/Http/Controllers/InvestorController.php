@@ -11,35 +11,22 @@ use App\Models\DetailActivity;
 use App\Models\Outlet;
 use App\Models\Timeplan;
 use App\Models\Progress;
+use App\Models\UserLog;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Auth;
 
 class InvestorController extends Controller
 {
     public function calendar()
     {
-        $outlet = Outlet::all()->toArray();
-        $category_activity = null;
-        $detail_activity = null;
-        $timeplan = null;
+        $investor = Auth::user()->ID_USER;
+        $log = UserLog::where('user', '=', $investor)->first();
 
-        return view('investor.calendar', compact('category_activity', 'detail_activity', 'outlet', 'timeplan'));
-    }
-
-    public function getCategory($outlet)
-    {
-        $data = CategoryActivity::where('ID_OUTLET', '=', $outlet)->get();
-
-        return response()->json(["success" => true, "data" => $data]);
-    }
-
-    public function getCalendar($id_category)
-    {
-        $outlet = Outlet::all()->toArray();
-        $category_activity = CategoryActivity::orderBy('created_at', 'ASC')->first()->toArray();
-        $detail_activity = DetailActivity::where('ID_CATEGORY', '=', $id_category)->orderBy('created_at', 'ASC')->get()->toArray();
+        $outlet = Outlet::where('ID_OUTLET', '=', $log->outlet)->first();
+        $detail_activity = CategoryActivity::join('detail_activity as d', 'd.ID_CATEGORY', '=', 'category_activity.ID_CATEGORY')->where('category_activity.ID_OUTLET', '=', $outlet->ID_OUTLET)->orderBy('d.created_at', 'ASC')->get()->toArray();
         $timeplan = Timeplan::orderBy('created_at', 'ASC')->get()->toArray();
-
+        
         for($i = 0; $i < count($detail_activity); $i++){
             for($j = 0; $j < count($timeplan); $j++){
                 if($timeplan[$j]['ID_DETAIL_ACTIVITY'] == $detail_activity[$i]['ID_DETAIL_ACTIVITY']){
@@ -54,7 +41,7 @@ class InvestorController extends Controller
             }
         }
 
-        return view('investor.calendar', compact('category_activity', 'detail_activity', 'outlet', 'timeplan'));
+        return view('investor.calendar', compact('detail_activity', 'outlet', 'timeplan'));
     }
 
     public function timetable()
