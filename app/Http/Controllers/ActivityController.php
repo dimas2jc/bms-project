@@ -75,21 +75,33 @@ class ActivityController extends Controller
         return redirect('/admin/timetable')->with('toast_msg_success', 'Reschedule berhasil');
     }
 
-    public function activity_timeline()
+    public function activity_timeline(Request $request)
     {
+        $result = [];
+        $id_outlet = $request->id_outlet;
         $activity = DetailActivity::orderBy('created_at', 'ASC')->get()->toArray();
         $timeplan = Timeplan::orderBy('created_at', 'ASC')->get()->toArray();
 
         for($i = 0; $i < count($activity); $i++){
+            $tmp_id_category = $activity[$i]['ID_CATEGORY'];
+            $tmp_id_outlet = DB::table('category_activity')->where('ID_CATEGORY', $tmp_id_category)
+                                ->value('ID_OUTLET');
+
+            if($tmp_id_outlet == $id_outlet){
+                array_push($result, $activity[$i]);
+            }
+        }
+
+        for($i = 0; $i < count($result); $i++){
             for($j = 0; $j < count($timeplan); $j++){
-                if($timeplan[$j]['ID_DETAIL_ACTIVITY'] == $activity[$i]['ID_DETAIL_ACTIVITY']){
-                    $activity[$i]['TIMEPLAN'] = $timeplan[$j];
-                    $activity[$i]['TIMEPLAN']['TIMELINE']['YEARS'] = $this->get_activity_years(
+                if($timeplan[$j]['ID_DETAIL_ACTIVITY'] == $result[$i]['ID_DETAIL_ACTIVITY']){
+                    $result[$i]['TIMEPLAN'] = $timeplan[$j];
+                    $result[$i]['TIMELINE']['YEARS'] = $this->get_activity_years(
                         $timeplan[$j]['TANGGAL_START'],
                         $timeplan[$j]['TANGGAL_END']
                     );
-                    $activity[$i]['TIMEPLAN']['TIMELINE']['WEEKS'] = $this->get_activity_weeks(
-                        $activity[$i]['TIMEPLAN']['TIMELINE']['YEARS'],
+                    $result[$i]['TIMELINE']['WEEKS'] = $this->get_activity_weeks(
+                        $result[$i]['TIMELINE']['YEARS'],
                         $timeplan[$j]['TANGGAL_START'],
                         $timeplan[$j]['TANGGAL_END']
                     );
@@ -97,8 +109,7 @@ class ActivityController extends Controller
             }
         }
 
-        // dd($activity);
-        return $activity;
+        return $result;
     }
 
     private function get_activity_years($start_date, $end_date)
@@ -146,6 +157,5 @@ class ActivityController extends Controller
         }
 
         return $result;
-        // return $end_week;
     }
 }

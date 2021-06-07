@@ -377,8 +377,8 @@
         const OUTLET = {!! json_encode($outlet) !!}
         const TIMEPLAN = {!! json_encode($timeplan) !!}
         const BASE_URL = "{{ url('/') }}"
+        const CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content')
         console.log(DETAIL_ACTIVITY)
-        console.log(BASE_URL)
     </script>
     <script src="{{ asset('/assets/admin/js/timetable.js') }}"></script>
     <script src="{{ asset('/assets/admin/js/timeline.js') }}"></script>
