@@ -45,6 +45,34 @@ function switch_outlet(select_outlet){
     clear_tanggal_penting(id_outlet)
     draw_category(id_outlet)
     draw_tanggal_penting(id_outlet)
+    get_timeline(id_outlet, $('#tahun-aktif').val())
+    draw_timeline(timeline)
+}
+
+/**
+ * Function untuk mentrigger perubahan data pada saat bepindah tahun
+ * @param {*} switch_btn 
+ */
+function switch_year(switch_btn){
+    let navigation = $(switch_btn).data('navigation')
+    let year = parseInt($('#tahun-aktif').val())
+    let id_outlet = $('#select-outlet').val()
+
+    if(navigation == 'prev'){
+        year = year - 1
+    } else if(navigation == 'next'){
+        year = year + 1
+    }
+
+    $('#tahun-aktif').val(year)
+    $('.display-tahun-aktif').html(year)
+
+    clear_timetable(id_outlet)
+    clear_tanggal_penting(id_outlet)
+    draw_category(id_outlet)
+    draw_tanggal_penting(id_outlet)
+    get_timeline(id_outlet, year)
+    draw_timeline(timeline)
 }
 
 // Trigger function untuk menambahkan category ke dalam timetable

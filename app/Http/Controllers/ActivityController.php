@@ -83,6 +83,7 @@ class ActivityController extends Controller
         $activity = DetailActivity::orderBy('created_at', 'ASC')->get()->toArray();
         $timeplan = Timeplan::orderBy('created_at', 'ASC')->get()->toArray();
 
+        // Detail activity
         for($i = 0; $i < count($activity); $i++){
             $tmp_id_category = $activity[$i]['ID_CATEGORY'];
             $tmp_id_outlet = DB::table('category_activity')->where('ID_CATEGORY', $tmp_id_category)
@@ -93,6 +94,7 @@ class ActivityController extends Controller
             }
         }
 
+        // Timeplan
         for($i = 0; $i < count($result); $i++){
             for($j = 0; $j < count($timeplan); $j++){
                 if($timeplan[$j]['ID_DETAIL_ACTIVITY'] == $result[$i]['ID_DETAIL_ACTIVITY']){
@@ -101,13 +103,14 @@ class ActivityController extends Controller
             }
         }
 
+        // Timeline
         for($i = 0; $i < count($result); $i++){
             $tmp_start_date = date('Y', strtotime($result[$i]['TIMEPLAN']['TANGGAL_START']));
             $tmp_end_date = date('Y', strtotime($result[$i]['TIMEPLAN']['TANGGAL_END']));
 
             // Jika tahun mulai dan tahun selesai sama
             if($tmp_start_date == $tmp_end_date){
-                if($tmp_start_date == date('Y', strtotime($tahun))){
+                if($tmp_end_date == date('Y', strtotime($tahun))){
                     $tmp_start_month = date('n', strtotime($result[$i]['TIMEPLAN']['TANGGAL_START']));
                     $tmp_end_month = date('n', strtotime($result[$i]['TIMEPLAN']['TANGGAL_END']));
                     $tmp_start_month_date = date('j', strtotime($result[$i]['TIMEPLAN']['TANGGAL_START']));
@@ -144,11 +147,14 @@ class ActivityController extends Controller
                     }
 
                     $result[$i]['TIMELINE']['WEEKS'] = $weeks;
+                } else {
+                    $result[$i]['TIMELINE']['WEEKS'] = [];
                 }
+
             } else { // Jika tahun mulai dan tahun selesai beda
 
                 // jika input request tahun = tahun start
-                if( $tmp_start_date == date('Y', strtotime($tahun)) ){
+                if( $tmp_start_date === date('Y', strtotime($tahun)) ){
                     $tmp_start_month = date('n', strtotime($result[$i]['TIMEPLAN']['TANGGAL_START']));
                     $tmp_start_month_date = date('j', strtotime($result[$i]['TIMEPLAN']['TANGGAL_START']));
                     $x = (int)$tmp_start_month;
@@ -171,7 +177,7 @@ class ActivityController extends Controller
 
                     $result[$i]['TIMELINE']['WEEKS'] = $weeks;
 
-                } elseif( $tmp_end_date == date('Y', strtotime($tahun)) ){
+                } elseif( $tmp_end_date === date('Y', strtotime($tahun)) ){
                     // jika input request tahun = tahun end
 
                     $tmp_end_month = date('n', strtotime($result[$i]['TIMEPLAN']['TANGGAL_END']));
@@ -215,7 +221,7 @@ class ActivityController extends Controller
 
     public function test()
     {
-        $tahun = '2021';
+        $tahun = '2022';
         $id_outlet = '096d71cfc0824fc6919640a4eff6441b';
         $result = [];
         $activity = DetailActivity::orderBy('created_at', 'ASC')->get()->toArray();

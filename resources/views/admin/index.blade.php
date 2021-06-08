@@ -32,6 +32,8 @@
                                 <h4 class="card-title">
                                     Time Table Outlet
                                     <span id="title-outlet-name">{{ $outlet[0]['NAMA'] }}</span>
+                                    Tahun
+                                    <span class="display-tahun-aktif">{{ date('Y') }}</span>
                                 </h4>
                             </div>
                             <div class="card-body pt-4">
@@ -40,7 +42,7 @@
                                         <label class="mr-3">Select Outlet</label>
                                     </div>
                                     <div class="col-md-5 col-sm-10">
-                                    <select class="form-control" onchange="switch_outlet(this)">
+                                    <select id="select-outlet" class="form-control" onchange="switch_outlet(this)">
                                         @for ($i = 0; $i < count($outlet); $i++)
                                             <option @if($i == 0) selected @endif value="{{ $outlet[$i]['ID_OUTLET'] }}">{{ $outlet[$i]['NAMA'] }}</option>
                                         @endfor
@@ -63,14 +65,14 @@
                                                 <th rowspan="3">Activities</th>
                                                 <th rowspan="3">Durasi</th>
                                                 <th colspan="2">
-                                                    <i class="fas fa-lg fa-caret-left" style="cursor: pointer;" data-toggle="tooltip" data-placement="right" title="Prev year"></i>
+                                                    <i onclick="switch_year(this)" data-navigation="prev" class="fas fa-lg fa-caret-left" style="cursor: pointer;" data-toggle="tooltip" data-placement="right" title="Prev year"></i>
                                                 </th>
                                                 <th colspan="44">
                                                     <input type="hidden" value="{{ date('Y') }}" id="tahun-aktif">
-                                                    <span id="display-tahun-aktif">{{ date('Y') }}</span>
+                                                    <span class="display-tahun-aktif">{{ date('Y') }}</span>
                                                 </th>
                                                 <th colspan="2">
-                                                    <i class="fas fa-lg fa-caret-right" style="cursor: pointer;" data-toggle="tooltip" data-placement="left" title="Next year"></i>
+                                                    <i onclick="switch_year(this)" data-navigation="next" class="fas fa-lg fa-caret-right" style="cursor: pointer;" data-toggle="tooltip" data-placement="left" title="Next year"></i>
                                                 </th>
                                             </tr>
                                             <tr>
@@ -378,6 +380,7 @@
         const TIMEPLAN = {!! json_encode($timeplan) !!}
         const BASE_URL = "{{ url('/') }}"
         const CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content')
+        var timeline
         console.log(DETAIL_ACTIVITY)
     </script>
     <script src="{{ asset('/assets/admin/js/timetable.js') }}"></script>

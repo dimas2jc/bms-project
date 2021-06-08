@@ -1,7 +1,5 @@
-let timeline
-
 $(function(){
-    get_timeline(OUTLET[0].ID_OUTLET, new Date().getFullYear())
+    get_timeline(OUTLET[0].ID_OUTLET, $('#tahun-aktif').val())
     draw_timeline(timeline)
 })
 
