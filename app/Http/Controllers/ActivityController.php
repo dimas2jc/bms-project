@@ -78,6 +78,7 @@ class ActivityController extends Controller
     public function activity_timeline(Request $request)
     {
         $result = [];
+        $tahun = $request->tahun;
         $id_outlet = $request->id_outlet;
         $activity = DetailActivity::orderBy('created_at', 'ASC')->get()->toArray();
         $timeplan = Timeplan::orderBy('created_at', 'ASC')->get()->toArray();
@@ -96,66 +97,257 @@ class ActivityController extends Controller
             for($j = 0; $j < count($timeplan); $j++){
                 if($timeplan[$j]['ID_DETAIL_ACTIVITY'] == $result[$i]['ID_DETAIL_ACTIVITY']){
                     $result[$i]['TIMEPLAN'] = $timeplan[$j];
-                    $result[$i]['TIMELINE']['YEARS'] = $this->get_activity_years(
-                        $timeplan[$j]['TANGGAL_START'],
-                        $timeplan[$j]['TANGGAL_END']
-                    );
-                    $result[$i]['TIMELINE']['WEEKS'] = $this->get_activity_weeks(
-                        $result[$i]['TIMELINE']['YEARS'],
-                        $timeplan[$j]['TANGGAL_START'],
-                        $timeplan[$j]['TANGGAL_END']
-                    );
                 }
             }
         }
 
-        return $result;
-    }
+        for($i = 0; $i < count($result); $i++){
+            $tmp_start_date = date('Y', strtotime($result[$i]['TIMEPLAN']['TANGGAL_START']));
+            $tmp_end_date = date('Y', strtotime($result[$i]['TIMEPLAN']['TANGGAL_END']));
 
-    private function get_activity_years($start_date, $end_date)
-    {
-        $result = [];
-        $start_date = date('Y', strtotime($start_date));
-        $end_date = date('Y', strtotime($end_date));
+            // Jika tahun mulai dan tahun selesai sama
+            if($tmp_start_date == $tmp_end_date){
+                if($tmp_start_date == date('Y', strtotime($tahun))){
+                    $tmp_start_month = date('n', strtotime($result[$i]['TIMEPLAN']['TANGGAL_START']));
+                    $tmp_end_month = date('n', strtotime($result[$i]['TIMEPLAN']['TANGGAL_END']));
+                    $tmp_start_month_date = date('j', strtotime($result[$i]['TIMEPLAN']['TANGGAL_START']));
+                    $tmp_end_month_date = date('j', strtotime($result[$i]['TIMEPLAN']['TANGGAL_END']));
 
-        for($i = (int)$start_date; $i <= (int)$end_date; $i++){
-            array_push($result, $i);
-        }
-
-        return $result;
-    }
-    
-    private function get_activity_weeks($years, $start_date, $end_date)
-    {
-        $result = [];
-        $start_date = date('Y-m-d', strtotime($start_date));
-        $end_date = date('Y-m-d', strtotime($end_date));
-        $start_week = date('W', strtotime($start_date));
-        $end_week = date('W', strtotime($end_date));
-        $diff = date_diff(date_create($start_date), date_create($end_date));
-
-        if(count($years) == 1){
-            for($i = (int)$start_week; $i <= (int)$end_week; $i++){
-                array_push($result, $i);
-            }
-        } else {
-            for($i = 0; $i < count($years); $i++){
-                if($i == 0){
-                    for($j = (int)$start_week; $j <= 48; $j++){
-                        array_push($result, $j);
+                    $a = (int)$tmp_start_month;
+                    $b = (int)$tmp_end_month;
+                    $x = (int)$tmp_start_month_date;
+                    $y = (int)$tmp_end_month_date;
+                    $weeks = [];
+                    
+                    if(1 <= $x && $x <= 7){
+                        $tmp_start_week = ($a * 4) - 3;
+                    } elseif (8 <= $x && $x <= 14){
+                        $tmp_start_week = ($a * 4)  - 2;
+                    } elseif (15 <= $x && $x <= 21){
+                        $tmp_start_week = ($a * 4)  - 1;
+                    } elseif (22 <= $x && $x <= 31){
+                        $tmp_start_week = ($a * 4) ;
                     }
-                } elseif ($i > 0 && $i != count($years) - 1) {
-                    for($j = 1; $j <= 48; $j++){
-                        array_push($result, $j);
+                    
+                    if(1 <= $y && $y <= 7){
+                        $tmp_end_week = ($b * 4) - 3;
+                    } elseif (8 <= $y && $y <= 14){
+                        $tmp_end_week = ($b * 4)  - 2;
+                    } elseif (15 <= $y && $y <= 21){
+                        $tmp_end_week = ($b * 4)  - 1;
+                    } elseif (22 <= $y && $y <= 31){
+                        $tmp_end_week = ($b * 4) ;
                     }
+
+                    for($j = $tmp_start_week; $j <= $tmp_end_week; $j++){
+                        array_push($weeks, $j);
+                    }
+
+                    $result[$i]['TIMELINE']['WEEKS'] = $weeks;
+                }
+            } else { // Jika tahun mulai dan tahun selesai beda
+
+                // jika input request tahun = tahun start
+                if( $tmp_start_date == date('Y', strtotime($tahun)) ){
+                    $tmp_start_month = date('n', strtotime($result[$i]['TIMEPLAN']['TANGGAL_START']));
+                    $tmp_start_month_date = date('j', strtotime($result[$i]['TIMEPLAN']['TANGGAL_START']));
+                    $x = (int)$tmp_start_month;
+                    $y = (int)$tmp_start_month_date;
+                    $weeks = [];
+
+                    if(1 <= $y && $y <= 7){
+                        $tmp_start_week = ($x * 4) - 3;
+                    } elseif (8 <= $y && $y <= 14){
+                        $tmp_start_week = ($x * 4)  - 2;
+                    } elseif (15 <= $y && $y <= 21){
+                        $tmp_start_week = ($x * 4)  - 1;
+                    } elseif (22 <= $y && $y <= 31){
+                        $tmp_start_week = ($x * 4) ;
+                    }
+
+                    for($j = $tmp_start_week; $j <= 48; $j++){
+                        array_push($weeks, $j);
+                    }
+
+                    $result[$i]['TIMELINE']['WEEKS'] = $weeks;
+
+                } elseif( $tmp_end_date == date('Y', strtotime($tahun)) ){
+                    // jika input request tahun = tahun end
+
+                    $tmp_end_month = date('n', strtotime($result[$i]['TIMEPLAN']['TANGGAL_END']));
+                    $tmp_end_month_date = date('j', strtotime($result[$i]['TIMEPLAN']['TANGGAL_END']));
+                    $x = (int)$tmp_end_month;
+                    $y = (int)$tmp_end_month_date;
+                    $weeks = [];
+
+                    if(1 <= $y && $y <= 7){
+                        $tmp_end_week = ($x * 4) - 3;
+                    } elseif (8 <= $y && $y <= 14){
+                        $tmp_end_week = ($x * 4)  - 2;
+                    } elseif (15 <= $y && $y <= 21){
+                        $tmp_end_week = ($x * 4)  - 1;
+                    } elseif (22 <= $y && $y <= 31){
+                        $tmp_end_week = ($x * 4) ;
+                    }
+
+                    for($j = 1; $j <= $tmp_end_week; $j++){
+                        array_push($weeks, $j);
+                    }
+
+                    $result[$i]['TIMELINE']['WEEKS'] = $weeks;
+
                 } else {
-                    for($j = 1; $j <= (int)$end_week; $j++){
-                        array_push($result, $j);
+                    // jika input request tahun diantara tahun start dan tahun end
+                    $weeks = [];
+
+                    for($j = 1; $j <= 48; $j++){
+                        array_push($weeks, $j);
                     }
+
+                    $result[$i]['TIMELINE']['WEEKS'] = $weeks;
+                }
+            }
+
+        }
+
+        return $result;
+    }
+
+    public function test()
+    {
+        $tahun = '2021';
+        $id_outlet = '096d71cfc0824fc6919640a4eff6441b';
+        $result = [];
+        $activity = DetailActivity::orderBy('created_at', 'ASC')->get()->toArray();
+        $timeplan = Timeplan::orderBy('created_at', 'ASC')->get()->toArray();
+
+        for($i = 0; $i < count($activity); $i++){
+            $tmp_id_category = $activity[$i]['ID_CATEGORY'];
+            $tmp_id_outlet = DB::table('category_activity')->where('ID_CATEGORY', $tmp_id_category)
+                                ->value('ID_OUTLET');
+
+            if($tmp_id_outlet == $id_outlet){
+                array_push($result, $activity[$i]);
+            }
+        }
+
+        for($i = 0; $i < count($result); $i++){
+            for($j = 0; $j < count($timeplan); $j++){
+                if($timeplan[$j]['ID_DETAIL_ACTIVITY'] == $result[$i]['ID_DETAIL_ACTIVITY']){
+                    $result[$i]['TIMEPLAN'] = $timeplan[$j];
                 }
             }
         }
 
-        return $result;
+        for($i = 0; $i < count($result); $i++){
+            $tmp_start_date = date('Y', strtotime($result[$i]['TIMEPLAN']['TANGGAL_START']));
+            $tmp_end_date = date('Y', strtotime($result[$i]['TIMEPLAN']['TANGGAL_END']));
+
+            // Jika tahun mulai dan tahun selesai sama
+            if($tmp_start_date == $tmp_end_date){
+                if($tmp_start_date == date('Y', strtotime($tahun))){
+                    $tmp_start_month = date('n', strtotime($result[$i]['TIMEPLAN']['TANGGAL_START']));
+                    $tmp_end_month = date('n', strtotime($result[$i]['TIMEPLAN']['TANGGAL_END']));
+                    $tmp_start_month_date = date('j', strtotime($result[$i]['TIMEPLAN']['TANGGAL_START']));
+                    $tmp_end_month_date = date('j', strtotime($result[$i]['TIMEPLAN']['TANGGAL_END']));
+
+                    $a = (int)$tmp_start_month;
+                    $b = (int)$tmp_end_month;
+                    $x = (int)$tmp_start_month_date;
+                    $y = (int)$tmp_end_month_date;
+                    $weeks = [];
+                    
+                    if(1 <= $x && $x <= 7){
+                        $tmp_start_week = ($a * 4) - 3;
+                    } elseif (8 <= $x && $x <= 14){
+                        $tmp_start_week = ($a * 4)  - 2;
+                    } elseif (15 <= $x && $x <= 21){
+                        $tmp_start_week = ($a * 4)  - 1;
+                    } elseif (22 <= $x && $x <= 31){
+                        $tmp_start_week = ($a * 4) ;
+                    }
+                    
+                    if(1 <= $y && $y <= 7){
+                        $tmp_end_week = ($b * 4) - 3;
+                    } elseif (8 <= $y && $y <= 14){
+                        $tmp_end_week = ($b * 4)  - 2;
+                    } elseif (15 <= $y && $y <= 21){
+                        $tmp_end_week = ($b * 4)  - 1;
+                    } elseif (22 <= $y && $y <= 31){
+                        $tmp_end_week = ($b * 4) ;
+                    }
+
+                    for($j = $tmp_start_week; $j <= $tmp_end_week; $j++){
+                        array_push($weeks, $j);
+                    }
+
+                    $result[$i]['TIMELINE']['WEEKS'] = $weeks;
+                }
+            } else { // Jika tahun mulai dan tahun selesai beda
+
+                // jika input request tahun = tahun start
+                if( $tmp_start_date == date('Y', strtotime($tahun)) ){
+                    $tmp_start_month = date('n', strtotime($result[$i]['TIMEPLAN']['TANGGAL_START']));
+                    $tmp_start_month_date = date('j', strtotime($result[$i]['TIMEPLAN']['TANGGAL_START']));
+                    $x = (int)$tmp_start_month;
+                    $y = (int)$tmp_start_month_date;
+                    $weeks = [];
+
+                    if(1 <= $y && $y <= 7){
+                        $tmp_start_week = ($x * 4) - 3;
+                    } elseif (8 <= $y && $y <= 14){
+                        $tmp_start_week = ($x * 4)  - 2;
+                    } elseif (15 <= $y && $y <= 21){
+                        $tmp_start_week = ($x * 4)  - 1;
+                    } elseif (22 <= $y && $y <= 31){
+                        $tmp_start_week = ($x * 4) ;
+                    }
+
+                    for($j = $tmp_start_week; $j <= 48; $j++){
+                        array_push($weeks, $j);
+                    }
+
+                    $result[$i]['TIMELINE']['WEEKS'] = $weeks;
+
+                } elseif( $tmp_end_date == date('Y', strtotime($tahun)) ){
+                    // jika input request tahun = tahun end
+
+                    $tmp_end_month = date('n', strtotime($result[$i]['TIMEPLAN']['TANGGAL_END']));
+                    $tmp_end_month_date = date('j', strtotime($result[$i]['TIMEPLAN']['TANGGAL_END']));
+                    $x = (int)$tmp_end_month;
+                    $y = (int)$tmp_end_month_date;
+                    $weeks = [];
+
+                    if(1 <= $y && $y <= 7){
+                        $tmp_end_week = ($x * 4) - 3;
+                    } elseif (8 <= $y && $y <= 14){
+                        $tmp_end_week = ($x * 4)  - 2;
+                    } elseif (15 <= $y && $y <= 21){
+                        $tmp_end_week = ($x * 4)  - 1;
+                    } elseif (22 <= $y && $y <= 31){
+                        $tmp_end_week = ($x * 4) ;
+                    }
+
+                    for($j = 1; $j <= $tmp_end_week; $j++){
+                        array_push($weeks, $j);
+                    }
+
+                    $result[$i]['TIMELINE']['WEEKS'] = $weeks;
+
+                } else {
+                    // jika input request tahun diantara tahun start dan tahun end
+                    $weeks = [];
+
+                    for($j = 1; $j <= 48; $j++){
+                        array_push($weeks, $j);
+                    }
+
+                    $result[$i]['TIMELINE']['WEEKS'] = $weeks;
+                }
+            }
+
+        }
+
+        dd($result);
     }
 }
