@@ -11,8 +11,10 @@ use App\Models\DetailActivity;
 use App\Models\Outlet;
 use App\Models\Timeplan;
 use App\Models\Progress;
+use App\Models\UserLog;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Auth;
 
 class PenanggungjawabController extends Controller
 {
@@ -64,5 +66,24 @@ class PenanggungjawabController extends Controller
         }
 
         return view('pic.timetable', compact('category_activity', 'detail_activity', 'outlet', 'pic', 'timeplan'));
+    }
+
+    public function progress()
+    {
+        $pic = Auth::user()->ID_USER;
+        $log = UserLog::where('user', '=', $pic)->get();
+        $activity = Progress::join('detail_activity as d', 'd.ID_DETAIL_ACTIVITY', '=', 'progress.ID_DETAIL_ACTIVITY')->where('status', '!=', '0')->get();
+
+        $data = [];
+
+        foreach($log as $l){
+            foreach($activity as $a){
+                if($a->ID_DETAIL_ACTIVITY == $l->activity){
+                    $data[] = $a;
+                }
+            }
+        }
+
+        return view('pic.progress', compact('data'));
     }
 }
