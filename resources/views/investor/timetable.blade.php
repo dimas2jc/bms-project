@@ -32,6 +32,8 @@
                                 <h4 class="card-title">
                                     Time Table Outlet
                                     <span id="title-outlet-name">{{ $outlet[0]['NAMA'] }}</span>
+                                    Tahun
+                                    <span class="display-tahun-aktif">{{ date('Y') }}</span>
                                 </h4>
                             </div>
                             <div class="card-body pt-4">
@@ -40,7 +42,7 @@
                                         <label class="mr-3">Select Outlet</label>
                                     </div>
                                     <div class="col-md-5 col-sm-10">
-                                    <select class="form-control" onchange="switch_outlet(this)">
+                                    <select id="select-outlet" class="form-control" onchange="switch_outlet(this)">
                                         @for ($i = 0; $i < count($outlet); $i++)
                                             <option @if($i == 0) selected @endif value="{{ $outlet[$i]['ID_OUTLET'] }}">{{ $outlet[$i]['NAMA'] }}</option>
                                         @endfor
@@ -63,14 +65,14 @@
                                                 <th rowspan="3">Activities</th>
                                                 <th rowspan="3">Durasi</th>
                                                 <th colspan="2">
-                                                    <i class="fas fa-lg fa-caret-left" style="cursor: pointer;" data-toggle="tooltip" data-placement="right" title="Prev year"></i>
+                                                    <i onclick="switch_year(this)" data-navigation="prev" class="fas fa-lg fa-caret-left" style="cursor: pointer;" data-toggle="tooltip" data-placement="right" title="Prev year"></i>
                                                 </th>
                                                 <th colspan="44">
                                                     <input type="hidden" value="{{ date('Y') }}" id="tahun-aktif">
-                                                    <span id="display-tahun-aktif">{{ date('Y') }}</span>
+                                                    <span class="display-tahun-aktif">{{ date('Y') }}</span>
                                                 </th>
                                                 <th colspan="2">
-                                                    <i class="fas fa-lg fa-caret-right" style="cursor: pointer;" data-toggle="tooltip" data-placement="left" title="Next year"></i>
+                                                    <i onclick="switch_year(this)" data-navigation="next" class="fas fa-lg fa-caret-right" style="cursor: pointer;" data-toggle="tooltip" data-placement="left" title="Next year"></i>
                                                 </th>
                                             </tr>
                                             <tr>
@@ -246,7 +248,7 @@
                                 <i class="fas fa-info-circle mr-2"></i>
                                 Detail
                             </button>
-                            <button onclick="reschedule_activity()" type="button" class="btn btn-sm btn-secondary btn-rounded px-3">
+                            <button type="button" id="progress-reschedule-btn" onclick="reschedule_activity(this)" class="btn btn-sm btn-secondary btn-rounded px-3" data-id="">
                                 <i class="fas fa-calendar-alt mr-2"></i>
                                 Reschedule
                             </button>
@@ -259,7 +261,9 @@
             <!-- Reschedule activity modal -->
             <div class="modal fade" id="reschedule-modal" tabindex="-1" data-backdrop="static">
                 <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
-                    <div class="modal-content">
+                    <form action="{{ url('/admin/activity/reschedule') }}" method="POST" onsubmit="return reschedule_form_check()" class="modal-content">
+                        @csrf
+
                         <div class="modal-header">
                             <h5 class="modal-title">Reschedule Activity</h5>
                             <button type="button" class="close" data-dismiss="modal">
@@ -267,24 +271,28 @@
                             </button>
                         </div>
                         <div class="modal-body">
+
+                            <input type="hidden" id="reschedule-id-detail-activity" name="id_detail_activity" required readonly>
+
                             <div class="form-group">
                                 <label>Nama Activity</label>
-                                <input type="text" id="reschedule_nama_activity" class="form-control" readonly style="cursor: not-allowed;">
+                                <input type="text" id="reschedule-nama-activity" class="form-control" readonly style="cursor: not-allowed;">
                             </div>
                             
                             <div class="form-group">
                                 <label>Tanggal Mulai</label>
-                                <input type="date" id="reschedule_tanggal_mulai" class="form-control">
+                                <input type="date" onchange="reschedule_date_change()" id="reschedule-tanggal-mulai" name="tanggal_mulai" class="form-control" required>
                             </div>
                             
                             <div class="form-group">
                                 <label>Tanggal Selesai</label>
-                                <input type="date" id="reschedule_tanggal_selesai" class="form-control">
+                                <input type="date" onchange="reschedule_date_change()" id="reschedule-tanggal-selesai" name="tanggal_selesai" class="form-control" required>
                             </div>
                             
                             <div class="form-group">
                                 <label>Durasi</label>
-                                <input type="number" id="reschedule_durasi" class="form-control" readonly style="cursor: not-allowed;">
+                                <input type="text" id="reschedule-durasi" class="form-control" readonly style="cursor: not-allowed;">
+                                <small id="reschedule-error-msg" class="text-danger" style="display: none">Periksa kembali tanggal mulai dan tanggal selesai yang anda tentukan</small>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -292,12 +300,12 @@
                                 <i class="fas fa-times-circle mr-2"></i>
                                 Cancel
                             </button>
-                            <button type="button" class="btn btn-sm btn-secondary btn-rounded px-3" data-dismiss="modal">
+                            <button type="submit" class="btn btn-sm btn-secondary btn-rounded px-3">
                                 <i class="fas fa-save mr-2"></i>
                                 Save
                             </button>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
             <!-- ./Reschedule activity modal -->
@@ -370,9 +378,13 @@
         const DETAIL_ACTIVITY = {!! json_encode($detail_activity) !!}
         const OUTLET = {!! json_encode($outlet) !!}
         const TIMEPLAN = {!! json_encode($timeplan) !!}
+        const BASE_URL = "{{ url('/') }}"
+        const CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content')
+        var timeline
         console.log(DETAIL_ACTIVITY)
     </script>
     <script src="{{ asset('/assets/investor/js/timetable.js') }}"></script>
+    <script src="{{ asset('/assets/investor/js/timeline.js') }}"></script>
     
     @if (session('toast_msg_success'))
         <script defer>
