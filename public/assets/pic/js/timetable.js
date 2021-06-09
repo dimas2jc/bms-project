@@ -268,6 +268,7 @@ function add_activity_form_check(){
 // Modal progress activity
 function view_progress_activity(activity_el){
     var detail 
+    var status
 
     for(let i = 0; i < DETAIL_ACTIVITY.length; i++){
         if(DETAIL_ACTIVITY[i].ID_DETAIL_ACTIVITY == $(activity_el).data('id')){
@@ -288,7 +289,26 @@ function view_progress_activity(activity_el){
 
     $('#progress_nama_activity').val(detail.NAMA_AKTIFITAS)
     $('#progress-detail-btn').data('id', detail.ID_DETAIL_ACTIVITY)
-    $('#progress-reschedule-btn').data('id', detail.ID_DETAIL_ACTIVITY)
+    $('#update-progress-btn').data('id', detail.ID_DETAIL_ACTIVITY)
+    
+    //button progress
+    for(let j = 0; j < LOG.length; j++){
+        if(LOG[j].activity == detail.ID_DETAIL_ACTIVITY){
+            status = "true"
+            break
+        }
+        else{
+            status = "false"
+        }
+    }
+
+    if(status == "true"){
+        document.getElementById('update-progress-btn').style.visibility = "visible"
+    }
+    else{
+        document.getElementById('update-progress-btn').style.visibility = "hidden"
+    }
+
     $('#progress-activity-modal').modal('show')
 }
 
@@ -315,8 +335,8 @@ function view_detail_activity(activity_el){
     $('#detail-activity-modal').modal('show')
 }
 
-// Modal reschedule activity
-function reschedule_activity(activity_el){
+// Modal update progress
+function update_progress(activity_el){
     $('#progress-activity-modal').modal('hide')
     var detail 
 
@@ -326,18 +346,10 @@ function reschedule_activity(activity_el){
             break
         }
     }
-    $('#reschedule-id-detail-activity').val(detail.ID_DETAIL_ACTIVITY)
-    $('#reschedule-nama-activity').val(detail.NAMA_AKTIFITAS)
-    $('#reschedule-tanggal-mulai').val(detail.TANGGAL_START)
-    $('#reschedule-tanggal-selesai').val(detail.TANGGAL_END)
+    $('#update-progress-id-detail-activity').val(detail.ID_DETAIL_ACTIVITY)
+    $('#update-progress-nama-activity').val(detail.NAMA_AKTIFITAS)
     
-    let durasi = calculate_date_range(
-        $('#reschedule-tanggal-mulai').val(),
-        $('#reschedule-tanggal-selesai').val()
-    )
-
-    $('#reschedule-durasi').val(`${durasi} Hari`)
-    $('#reschedule-modal').modal('show')
+    $('#update-progress-modal').modal('show')
 }
 
 // Menghitung selisih antara dua tanggal
@@ -376,27 +388,6 @@ function reschedule_date_change(){
     } else {
         $('#reschedule-durasi').val(durasi)
     }
-}
-
-function reschedule_form_check(){
-    let form_status = 1
-    let start_date = $('#reschedule-tanggal-mulai').val()
-    let end_date = $('#reschedule-tanggal-selesai').val()
-    let durasi = calculate_date_range(start_date, end_date)
-
-    if(durasi >= 0){
-        form_status = 1
-    } else {
-        $('#reschedule-error-msg').css('display', 'block')
-        form_status = 0
-    }
-
-    if(form_status == 1){
-        return true
-    } else {
-        return false
-    }
-
 }
 
 // Menghapus semua isi timetable

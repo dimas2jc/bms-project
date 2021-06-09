@@ -26,6 +26,10 @@ class PenanggungjawabController extends Controller
         $detail_activity = DetailActivity::orderBy('created_at', 'ASC')->get()->toArray();
         $timeplan = Timeplan::orderBy('created_at', 'ASC')->get()->toArray();
 
+        //mengambil log
+        $id = Auth::user()->ID_USER;
+        $log = UserLog::where('user', '=', $id)->get()->toArray();
+
         for($i = 0; $i < count($detail_activity); $i++){
             for($j = 0; $j < count($timeplan); $j++){
                 if($timeplan[$j]['ID_DETAIL_ACTIVITY'] == $detail_activity[$i]['ID_DETAIL_ACTIVITY']){
@@ -65,7 +69,7 @@ class PenanggungjawabController extends Controller
             $detail_activity[$i]['PIC'] = $pic_name;
         }
 
-        return view('pic.timetable', compact('category_activity', 'detail_activity', 'outlet', 'pic', 'timeplan'));
+        return view('pic.timetable', compact('category_activity', 'detail_activity', 'outlet', 'pic', 'timeplan', 'log'));
     }
 
     public function progress()
@@ -83,7 +87,66 @@ class PenanggungjawabController extends Controller
                 }
             }
         }
+        // dd($data);
 
         return view('pic.progress', compact('data'));
+    }
+
+    public function update_progress(Request $request)
+    {
+        $nama_file = null;
+        $check = false;
+        $progress = Progress::all();
+
+        foreach($progress as $p){
+            if($p->ID_DETAIL_ACTIVITY == $request->id_detail_activity){
+                $check = true;
+                $id = $p->ID_PROGRESS;
+                break;
+            }
+        }
+
+        if($check == true){
+            if($request->file('file') != null)
+            {
+                $file = $request->file('file');
+                $nama_file = $file->getClientOriginalName();
+                $file->move('assets/dokumen/', $nama_file);
+
+                Progress::where('ID_PROGRESS', '=', $id)->update([
+                    'PROGRESS' => $request->progress,
+                    'KETERANGAN' => $request->keterangan,
+                    'FILE' => $nama_file,
+                    'updated_at' => Carbon::now()
+                ]);
+            }
+            else{
+                Progress::where('ID_PROGRESS', '=', $id)->update([
+                    'PROGRESS' => $request->progress,
+                    'KETERANGAN' => $request->keterangan,
+                    'updated_at' => Carbon::now()
+                ]);
+            }
+            
+        }
+        else{
+            if($request->file('file') != null)
+            {
+                $file = $request->file('file');
+                $nama_file = $file->getClientOriginalName();
+                $file->move('assets/dokumen/', $nama_file);
+            }
+
+            Progress::insert([
+                'ID_PROGRESS' => Uuid::uuid4()->getHex(),
+                'ID_DETAIL_ACTIVITY' => $request->id_detail_activity,
+                'PROGRESS' => $request->progress,
+                'KETERANGAN' => $request->keterangan,
+                'FILE' => $nama_file,
+                'created_at' => Carbon::now()
+            ]);
+        }
+
+        return redirect()->route('pic');
     }
 }

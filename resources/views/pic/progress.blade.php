@@ -2,6 +2,7 @@
 @extends('layout.default')
 @section('title', 'Progress')
 @section('extra-css')
+    <link rel="stylesheet" href="{{ asset('/metroadmin/icons/fontawesome/css/all.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/datatables/css/jquery.dataTables.min.css') }}">
 @endsection
 
@@ -43,12 +44,12 @@
                             <tbody>
                                 @foreach($data as $d)
                                 <tr>
-                                    <td>{{$data->NAMA_AKTIFITAS}}</td>
-                                    <td>{{$data->PROGRESS}}</td>
-                                    <td>{{$data->KETERANGAN}}</td>
-                                    <td>{{$data->FILE}}</td>
-                                    <td colspan="2" align="center">
-                                        <button type="button" class="btn btn-sm btn-warning btn-update" data-toggle="modal" data-target="#update-progress-{{$data->ID_PROGRESS}}">
+                                    <td>{{$d->NAMA_AKTIFITAS}}</td>
+                                    <td>{{$d->PROGRESS}} %</td>
+                                    <td>{{$d->KETERANGAN}}</td>
+                                    <td>{{$d->FILE}}</td>
+                                    <td align="center">
+                                        <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#update-progress-{{$d->ID_PROGRESS}}">
                                             <i class="fa fa-pencil mr-1" aria-hidden="true"></i>
                                             UPDATE
                                         </button>
@@ -64,38 +65,50 @@
     </div>
 
 </div>
-
+@foreach($data as $d)
 {{-- Start Update Progress Modal --}}
-<div class="modal fade show" id="update-progress" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade show" id="update-progress-{{$d->ID_PROGRESS}}" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header bg-warning">
-                <h5 class="modal-title text-light">Edit Investor</h5>
+                <h5 class="modal-title text-light">Update Progress</h5>
                 <button type="button" class="close" data-dismiss="modal">
                     <i class="fa fa-times-circle" style="color: white" aria-hidden="true"></i>
                 </button>
             </div>
             <div class="basic-form">
-                <form action="{{url('pic/update-progress')}}" method="POST">
+                <form action="{{url('/pic/activity/progress')}}" method="POST" enctype="multipart/form-data">
                 @csrf
-                    <input type="hidden" name="id" value="">
+                    <input type="hidden" name="id_detail_activity" value="{{$d->ID_DETAIL_ACTIVITY}}">
                     <div class="modal-body">
                         <div class="form-group">
                             <label>Progress</label>
-                            <input type="number" name="progress" class="form-control input-default" placeholder="Persentase" required>
+                            <div class="input-group mb-3">
+                                <input type="number" name="progress" class="form-control input-default" value="{{$d->PROGRESS}}" required>
+                                <div class="input-group-append">
+                                    <span class="input-group-text">%</span>
+                                </div>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label>Keterangan</label>
-                            <textarea name="keterangan" class="form-control input-default"></textarea>
+                            <textarea name="keterangan" value="{{$d->KETERANGAN}}" class="form-control input-default"></textarea>
                         </div>
                         <div class="form-group">
-                            <label>Dokumen</label>
+                            <label>Dokumen</label><br>
                             <input type="file" name="file" accept=".pdf, image/*"><br>
+                            <small style="color: red">Format file .pdf, image</small>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary">Simpan</button>
+                        <button type="button" class="btn btn-sm btn-light btn-rounded px-3" data-dismiss="modal">
+                            <i class="fas fa-times-circle mr-2"></i>
+                            Batal
+                        </button>
+                        <button type="submit" class="btn btn-sm btn-secondary btn-rounded px-3">
+                            <i class="fas fa-save mr-2"></i>
+                            Simpan
+                        </button>
                     </div>
                 </form>
             </div>
@@ -103,7 +116,7 @@
     </div>
 </div>
 {{-- End of Update Progress Modal --}}
-
+@endforeach
 
 @endsection
 

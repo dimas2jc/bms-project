@@ -50,12 +50,12 @@
                                     </div>
                                 </div>
 
-                                <div id="timetable-control-btn" class="my-3">
+                                <!-- <div id="timetable-control-btn" class="my-3">
                                     <button class="btn btn-primary btn-rounded btn-sm px-3" data-toggle="modal" data-target="#add-activity-modal">
                                         <i class="fas fa-plus-circle mr-2"></i>
                                         Activity
                                     </button>
-                                </div>
+                                </div> -->
 
                                 <div id="timetable-div">
                                     <!-- Main time table -->
@@ -117,7 +117,7 @@
             </div>
 			
             <!-- Add timeplan activity modal -->
-            <div class="modal fade" id="add-activity-modal" tabindex="-1" data-backdrop="static">
+            <!-- <div class="modal fade" id="add-activity-modal" tabindex="-1" data-backdrop="static">
                 <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -201,7 +201,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
             <!-- ./Add timeplan activity modal -->
             
             <!-- Progress activity modal -->
@@ -248,9 +248,9 @@
                                 <i class="fas fa-info-circle mr-2"></i>
                                 Detail
                             </button>
-                            <button type="button" id="progress-reschedule-btn" onclick="reschedule_activity(this)" class="btn btn-sm btn-secondary btn-rounded px-3" data-id="">
-                                <i class="fas fa-calendar-alt mr-2"></i>
-                                Reschedule
+                            <button type="button" id="update-progress-btn" onclick="update_progress(this)" class="btn btn-sm btn-secondary btn-rounded px-3" data-id="">
+                                <i class="fas fa-edit mr-2"></i>
+                                Progress
                             </button>
                         </div>
                     </div>
@@ -258,41 +258,46 @@
             </div>
             <!-- ./Progress activity modal -->
             
-            <!-- Reschedule activity modal -->
-            <div class="modal fade" id="reschedule-modal" tabindex="-1" data-backdrop="static">
+            <!-- Update progress activity modal -->
+            <div class="modal fade" id="update-progress-modal" tabindex="-1" data-backdrop="static">
                 <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
-                    <form action="{{ url('/admin/activity/reschedule') }}" method="POST" onsubmit="return reschedule_form_check()" class="modal-content">
+                    <form action="{{ url('/pic/activity/progress') }}" method="POST" class="modal-content" enctype="multipart/form-data">
                         @csrf
 
                         <div class="modal-header">
-                            <h5 class="modal-title">Reschedule Activity</h5>
+                            <h5 class="modal-title">Update Progress</h5>
                             <button type="button" class="close" data-dismiss="modal">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                         <div class="modal-body">
 
-                            <input type="hidden" id="reschedule-id-detail-activity" name="id_detail_activity" required readonly>
+                            <input type="hidden" id="update-progress-id-detail-activity" name="id_detail_activity" required readonly>
 
                             <div class="form-group">
                                 <label>Nama Activity</label>
-                                <input type="text" id="reschedule-nama-activity" class="form-control" readonly style="cursor: not-allowed;">
+                                <input type="text" id="update-progress-nama-activity" class="form-control" readonly style="cursor: not-allowed;">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Progress</label>
+                                <div class="input-group mb-3">
+                                    <input type="number" name="progress" class="form-control input-default" placeholder="Persentase" required>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                </div>
                             </div>
                             
                             <div class="form-group">
-                                <label>Tanggal Mulai</label>
-                                <input type="date" onchange="reschedule_date_change()" id="reschedule-tanggal-mulai" name="tanggal_mulai" class="form-control" required>
+                                <label>Keterangan</label>
+                                <textarea name="keterangan" class="form-control input-default"></textarea>
                             </div>
                             
                             <div class="form-group">
-                                <label>Tanggal Selesai</label>
-                                <input type="date" onchange="reschedule_date_change()" id="reschedule-tanggal-selesai" name="tanggal_selesai" class="form-control" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label>Durasi</label>
-                                <input type="text" id="reschedule-durasi" class="form-control" readonly style="cursor: not-allowed;">
-                                <small id="reschedule-error-msg" class="text-danger" style="display: none">Periksa kembali tanggal mulai dan tanggal selesai yang anda tentukan</small>
+                                <label>Dokumen</label><br>
+                                <input type="file" name="file" accept=".pdf, image/*"><br>
+                                <small style="color: red">Format file .pdf, image</small>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -308,7 +313,7 @@
                     </form>
                 </div>
             </div>
-            <!-- ./Reschedule activity modal -->
+            <!-- ./Update Progress activity modal -->
 
             <!-- Detail activity modal -->
             <div class="modal fade" id="detail-activity-modal" tabindex="-1" data-backdrop="static">
@@ -367,7 +372,7 @@
                     </div>
                 </div>
             </div>
-            <!-- ./Add timeplan activity modal -->
+            <!-- ./Detail activity modal -->
 @endsection
 
 @section('extra-script')
@@ -378,6 +383,7 @@
         const DETAIL_ACTIVITY = {!! json_encode($detail_activity) !!}
         const OUTLET = {!! json_encode($outlet) !!}
         const TIMEPLAN = {!! json_encode($timeplan) !!}
+        const LOG = {!! json_encode($log) !!}
         const BASE_URL = "{{ url('/') }}"
         const CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content')
         var timeline

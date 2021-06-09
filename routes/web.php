@@ -82,4 +82,6 @@ Route::group(['middleware' => ['auth']],function(){
     Route::get('/pic/timetable', [PenanggungjawabController::class, 'timetable'])->name('pic');
     Route::get('/pic/progress', [PenanggungjawabController::class, 'progress']);
 
+    Route::post('/pic/activity/progress', [PenanggungjawabController::class, 'update_progress']);
+
 });
