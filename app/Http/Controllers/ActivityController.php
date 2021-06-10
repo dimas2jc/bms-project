@@ -108,6 +108,12 @@ class ActivityController extends Controller
             $tmp_start_date = date('Y', strtotime($result[$i]['TIMEPLAN']['TANGGAL_START']));
             $tmp_end_date = date('Y', strtotime($result[$i]['TIMEPLAN']['TANGGAL_END']));
 
+            $result[$i]['TIMELINE']['COLOR'] = $this->timeline_color(
+                $result[$i]['TIMEPLAN']['TANGGAL_START'],
+                $result[$i]['TIMEPLAN']['TANGGAL_END'],
+                $result[$i]['STATUS']
+            );
+
             // Jika tahun mulai dan tahun selesai sama
             if($tmp_start_date == $tmp_end_date){
                 if($tmp_end_date == date('Y', strtotime($tahun))){
@@ -214,6 +220,47 @@ class ActivityController extends Controller
                 }
             }
 
+        }
+
+        return $result;
+    }
+
+    public function timeline_color($start_date, $end_date, $status)
+    {
+        $result = '';
+        $today = date('Y-m-d');
+        $start_date = date('Y-m-d', strtotime($start_date));
+        $end_date = date('Y-m-d', strtotime($end_date));
+        $diff_now_to_start = date_diff(
+            date_create($today),
+            date_create($start_date)
+        );
+        
+        $diff_now_to_end = date_diff(
+            date_create($today),
+            date_create($end_date)
+        );
+
+        if((int)$status == 0){
+
+            if($diff_now_to_start->days > 0 && $diff_now_to_start->invert == 0){
+                $result = 'black';
+            } elseif ($diff_now_to_start->days >= 0 && $diff_now_to_start->invert == 1){
+                if($diff_now_to_end->days >= 0 && $diff_now_to_end->invert == 0){
+                    $result = 'lime';
+                } elseif ($diff_now_to_end->days >= 0 && $diff_now_to_end->invert == 1){
+                    $result = 'red';
+                }
+            } elseif ($diff_now_to_start->days >= 0 && $diff_now_to_start->invert == 0){
+                if($diff_now_to_end->days >= 0 && $diff_now_to_end->invert == 0){
+                    $result = 'lime';
+                } elseif ($diff_now_to_end->days >= 0 && $diff_now_to_end->invert == 1){
+                    $result = 'red';
+                }
+            }
+
+        } elseif((int)$status == 1){
+            $result = 'blue';
         }
 
         return $result;

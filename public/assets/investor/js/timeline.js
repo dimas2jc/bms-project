@@ -37,7 +37,7 @@ function draw_timeline(timeline){
 
                     for(let k = 0; k < timeline_content.length; k++){
                         let el_td_selector = `week-${timeline_content[k]}`
-                        $(`#${el_tr_selector} .${el_td_selector}`).css('background-color', '#7a7a7a')
+                        $(`#${el_tr_selector} .${el_td_selector}`).css('background-color', `${timeline[j].TIMELINE.COLOR}`)
                     }
                 }
             }
