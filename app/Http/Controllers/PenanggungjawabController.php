@@ -76,7 +76,7 @@ class PenanggungjawabController extends Controller
     {
         $pic = Auth::user()->ID_USER;
         $log = UserLog::where('user', '=', $pic)->get();
-        $activity = Progress::join('detail_activity as d', 'd.ID_DETAIL_ACTIVITY', '=', 'progress.ID_DETAIL_ACTIVITY')->where('status', '!=', '0')->get();
+        $activity = Progress::join('detail_activity as d', 'd.ID_DETAIL_ACTIVITY', '=', 'progress.ID_DETAIL_ACTIVITY')->get();
 
         $data = [];
 
@@ -147,6 +147,14 @@ class PenanggungjawabController extends Controller
             ]);
         }
 
-        return redirect()->route('pic');
+        return redirect('/pic/progress');
+    }
+
+    public function download_file(Request $request)
+    {
+        $data = Progress::where('ID_PROGRESS', '=', $request->id)->first();
+        $file = public_path()."/assets/dokumen/".$data->FILE;
+
+        return response()->download($file, $data->FILE);
     }
 }

@@ -47,7 +47,18 @@
                                     <td>{{$d->NAMA_AKTIFITAS}}</td>
                                     <td>{{$d->PROGRESS}} %</td>
                                     <td>{{$d->KETERANGAN}}</td>
-                                    <td>{{$d->FILE}}</td>
+                                    <td>
+                                        @if($d->FILE != null)
+                                            <form action="{{url('/pic/download')}}" method="POST">
+                                            @csrf
+                                                <input type="hidden" name="id" value="{{$d->ID_PROGRESS}}">
+                                                <button type="submit" class="btn btn-sm btn-success">
+                                                    <i class="fa fa-download mr-1" aria-hidden="true"></i>
+                                                    DOWNLOAD
+                                                </button>
+                                            </form>
+                                        @endif
+                                    </td>
                                     <td align="center">
                                         <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#update-progress-{{$d->ID_PROGRESS}}">
                                             <i class="fa fa-pencil mr-1" aria-hidden="true"></i>
