@@ -241,19 +241,32 @@ class ActivityController extends Controller
             date_create($end_date)
         );
 
+        $diff_start_to_end = date_diff(
+            date_create($start_date),
+            date_create($end_date)
+        );
+
         if((int)$status == 0){
 
             if($diff_now_to_start->days > 0 && $diff_now_to_start->invert == 0){
                 $result = 'black';
             } elseif ($diff_now_to_start->days >= 0 && $diff_now_to_start->invert == 1){
                 if($diff_now_to_end->days >= 0 && $diff_now_to_end->invert == 0){
-                    $result = 'lime';
+                    if($diff_start_to_end->days > 10 && $diff_now_to_end->days <= 10 && $diff_now_to_end->invert == 0){
+                        $result = 'yellow';
+                    } else {
+                        $result = 'lime';
+                    }
                 } elseif ($diff_now_to_end->days >= 0 && $diff_now_to_end->invert == 1){
                     $result = 'red';
                 }
             } elseif ($diff_now_to_start->days >= 0 && $diff_now_to_start->invert == 0){
                 if($diff_now_to_end->days >= 0 && $diff_now_to_end->invert == 0){
-                    $result = 'lime';
+                    if($diff_start_to_end->days > 10 && $diff_now_to_end->days <= 10 && $diff_now_to_end->invert == 0){
+                        $result = 'yellow';
+                    } else {
+                        $result = 'lime';
+                    }
                 } elseif ($diff_now_to_end->days >= 0 && $diff_now_to_end->invert == 1){
                     $result = 'red';
                 }
