@@ -303,10 +303,10 @@ function view_progress_activity(activity_el){
     }
 
     if(status == "true"){
-        document.getElementById('update-progress-btn').style.visibility = "visible"
+        document.getElementById('update-progress-btn').style.display = "block"
     }
     else{
-        document.getElementById('update-progress-btn').style.visibility = "hidden"
+        document.getElementById('update-progress-btn').style.display = "none"
     }
 
     $('#progress-activity-modal').modal('show')

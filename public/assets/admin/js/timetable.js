@@ -289,6 +289,7 @@ function view_progress_activity(activity_el){
     $('#progress_nama_activity').val(detail.NAMA_AKTIFITAS)
     $('#progress-detail-btn').data('id', detail.ID_DETAIL_ACTIVITY)
     $('#progress-reschedule-btn').data('id', detail.ID_DETAIL_ACTIVITY)
+    
     $('#progress-activity-modal').modal('show')
 }
 
@@ -304,12 +305,8 @@ function view_detail_activity(activity_el){
         }
     }
 
-    $('#detail_outlet').val(detail.OUTLET)
-    $('#detail_category').val(detail.CATEGORY)
-    $('#detail_nama_activity').val(detail.NAMA_AKTIFITAS)
-    $('#detail_tanggal_mulai').val(detail.TANGGAL_START)
-    $('#detail_tanggal_selesai').val(detail.TANGGAL_END)
-    $('#detail_durasi').val(`${detail.DURASI.days + 1} Hari`)
+    $('.detail_nama_activity').html(detail.NAMA_AKTIFITAS)
+    $('#detail_tanggal').val(detail.TANGGAL_START +" - "+ detail.TANGGAL_END)
     $('#detail_pic').val(detail.PIC)
 
     $('#detail-activity-modal').modal('show')

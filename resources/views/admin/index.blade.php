@@ -235,7 +235,7 @@
                             <div class="form-group">
                                 <label>Deadline</label>
                                 <div class="progress" style="height: 20px;">
-                                    <div class="progress-bar bg-warning" role="progressbar" style="width: 75%">8 hari lagi</div>
+                                    <div class="progress-bar bg-warning" role="progressbar" id="detail_durasi" style="width: 75%"></div>
                                 </div>
                             </div>
                         </div>
@@ -321,42 +321,62 @@
                             </button>
                         </div>
                         <div class="modal-body">
+                            <!-- Nav tabs -->
+                            <div class="default-tab">
+                                <ul class="nav nav-tabs" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" data-toggle="tab" href="#log">Log Jadwal</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="tab" href="#progress">Progress</a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div class="tab-pane fade active show" id="log" role="tabpanel">
+                                        <div class="pt-4">
+                                            <h5 class="detail_nama_activity"></h5>
 
-                            <div class="form-group">
-                                <label>Outlet</label>
-                                <input type="text" id="detail_outlet" class="form-control" readonly style="cursor: not-allowed;">
-                            </div>
+                                            <div class="form-group">
+                                                <label>PIC</label>
+                                                <input type="text" id="detail_pic" class="form-control" readonly style="cursor: not-allowed;">
+                                            </div>
 
-                            <div class="form-group">
-                                <label>Category</label>
-                                <input type="text" id="detail_category" class="form-control" readonly style="cursor: not-allowed;">
-                            </div>
+                                            <div class="form-group">
+                                                <label>Timeline</label>
+                                                <input type="text" id="detail_tanggal" class="form-control" readonly style="cursor: not-allowed;">
+                                            </div>
 
-                            <div class="form-group">
-                                <label>Nama Activity</label>
-                                <input type="text" id="detail_nama_activity" class="form-control" readonly style="cursor: not-allowed;">
-                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="progress">
+                                        <div class="pt-4">
+                                            <h5 class="detail_nama_activity"></h5>
 
-                            <div class="form-group">
-                                <label>Tanggal Mulai</label>
-                                <input type="text" id="detail_tanggal_mulai" class="form-control" readonly style="cursor: not-allowed;">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label>Tanggal Selesai</label>
-                                <input type="text" id="detail_tanggal_selesai" class="form-control" readonly style="cursor: not-allowed;">
-                            </div>
+                                            <div class="form-group">
+                                                <label>Progress</label>
+                                                <div class="progress" style="height: 20px;">
+                                                    <div class="progress-bar bg-light" role="progressbar" style="width: 100%; color: #000;">0%</div>
+                                                </div>
+                                            </div>
 
-                            <div class="form-group">
-                                <label>Durasi</label>
-                                <input type="text" id="detail_durasi" class="form-control" readonly style="cursor: not-allowed;">
-                            </div>
+                                            <div class="form-group">
+                                                <label>Keterangan</label>
+                                                <textarea id="keterangan" class="form-control input-default" style="cursor: not-allowed;"></textarea>
+                                            </div>
+                                            
+                                            <div class="form-group">
+                                                <label>File</label>
+                                                <input type="text" id="nama_file" class="form-control" readonly style="cursor: not-allowed;"><br>
+                                                <button type="button" class="btn btn-sm btn-success">
+                                                    <i class="fa fa-download mr-1" aria-hidden="true"></i>
+                                                    DOWNLOAD
+                                                </button>
+                                            </div>
 
-                            <div class="form-group">
-                                <label>PIC</label>
-                                <input type="text" id="detail_pic" class="form-control" readonly style="cursor: not-allowed;">
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-sm btn-light btn-rounded px-3" data-dismiss="modal">
