@@ -364,23 +364,38 @@
 
                                             <div class="form-group">
                                                 <label>Progress</label>
-                                                <div class="progress" style="height: 20px;">
-                                                    <div class="progress-bar bg-light" role="progressbar" style="width: 100%; color: #000;">0%</div>
+                                                <div class="progress" style="position: relative; height:20px;">
+                                                    <div id="detail-percentage-bar" class="progress-bar" role="progressbar" style="width: 30%;"></div>
+                                                    <div id="detail-percentage-text" class="progress-bar-title"
+                                                                    style="position: absolute;
+                                                                            text-align: center;
+                                                                            line-height: 20px;
+                                                                            overflow: hidden;
+                                                                            color: #fff;
+                                                                            right: 0;
+                                                                            left: 0;
+                                                                            top: 0;
+                                                                            color: black;">
+                                                    0%
+                                                    </div>
                                                 </div>
                                             </div>
 
                                             <div class="form-group">
                                                 <label>Keterangan</label>
-                                                <textarea id="keterangan" class="form-control input-default" style="cursor: not-allowed;"></textarea>
+                                                <textarea id="keterangan" class="form-control input-default" style="cursor: not-allowed;">Tidak ada keterangan</textarea>
                                             </div>
                                             
                                             <div class="form-group">
                                                 <label>File</label>
-                                                <input type="text" id="nama_file" class="form-control" readonly style="cursor: not-allowed;"><br>
-                                                <button type="button" class="btn btn-sm btn-success">
-                                                    <i class="fa fa-download mr-1" aria-hidden="true"></i>
-                                                    DOWNLOAD
-                                                </button>
+                                                <input type="text" id="nama_file" class="form-control" value="Tidak ada file" readonly style="cursor: not-allowed;"><br>
+                                                <form action="{{url('admin/download')}}" method="POST">
+                                                    <input type="hidden" name="id" id="id_progress">
+                                                    <button type="submit" id="download" class="btn btn-sm btn-success">
+                                                        <i class="fa fa-download mr-1" aria-hidden="true"></i>
+                                                        DOWNLOAD
+                                                    </button>
+                                                </form>
                                             </div>
 
                                         </div>

@@ -65,6 +65,8 @@ Route::group(['middleware' => ['auth']],function(){
     Route::post('admin/calendar/update', [AdminController::class, 'updateCalendar']);
     Route::get('admin/getCategory/{outlet}', [AdminController::class, 'getCategory']);
     Route::get('admin/calendar/{id_category}', [AdminController::class, 'getCalendar']);
+
+    Route::get('admin/download', [AdminController::class, 'download_file']);
     
     // Activity
     Route::get('/admin/timeline/test', [ActivityController::class, 'test']);

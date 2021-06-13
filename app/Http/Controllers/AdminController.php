@@ -66,8 +66,11 @@ class AdminController extends Controller
             // Progress
             if(DB::table('progress')->where('ID_DETAIL_ACTIVITY', $detail_activity[$i]['ID_DETAIL_ACTIVITY'])->exists()){
 
-                $progress = DB::table('progress')->orderByDesc('created_at')->first();
+                $progress = DB::table('progress')->where('ID_DETAIL_ACTIVITY', $detail_activity[$i]['ID_DETAIL_ACTIVITY'])->first();
+                $detail_activity[$i]['ID_PROGRESS'] = $progress->ID_PROGRESS;
                 $detail_activity[$i]['PROGRESS'] = $progress->PROGRESS;
+                $detail_activity[$i]['KETERANGAN'] = $progress->KETERANGAN;
+                $detail_activity[$i]['FILE'] = $progress->FILE;
 
             } else {
                 $detail_activity[$i]['PROGRESS'] = 0;
@@ -264,5 +267,13 @@ class AdminController extends Controller
         }
 
         return view('admin.calendar', compact('category_activity', 'detail_activity', 'outlet', 'timeplan'));
+    }
+
+    public function download_file(Request $request)
+    {
+        $data = Progress::where('ID_PROGRESS', '=', $request->id)->first();
+        $file = public_path()."/assets/dokumen/".$data->FILE;
+
+        return response()->download($file, $data->FILE);
     }
 }

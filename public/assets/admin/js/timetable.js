@@ -312,6 +312,27 @@ function view_detail_activity(activity_el){
     $('#detail_tanggal').val(detail.TANGGAL_START +" - "+ detail.TANGGAL_END)
     $('#detail_pic').val(detail.PIC)
 
+    $('#detail-percentage-text').html(`${detail.PROGRESS}%`)
+    $('#detail-percentage-bar').css('width', `${detail.PROGRESS}%`)
+    if(detail.PROGRESS != 0){
+        $('#id_progress').val(detail.ID_PROGRESS)
+        if(detail.KETERANGAN != null){
+            $('#keterangan').val(detail.KETERANGAN)
+        }
+        else{
+            $('#keterangan').val("Tidak ada keterangan")
+        }
+        if(detail.FILE != null){
+            $('#nama_file').val(detail.FILE)
+        }
+        else{
+            $('#nama_file').val("Tidak ada file")
+            document.getElementById('download').style.display = "none"
+        }
+    }
+    else{
+        document.getElementById('download').style.display = "none"
+    }
     $('#detail-activity-modal').modal('show')
 }
 
