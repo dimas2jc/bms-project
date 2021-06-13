@@ -287,6 +287,9 @@ function view_progress_activity(activity_el){
     }
 
     $('#progress_nama_activity').val(detail.NAMA_AKTIFITAS)
+    $('#progress-percentage-text').html(`${detail.PROGRESS}%`)
+    $('#progress-percentage-bar').css('width', `${detail.PROGRESS}%`)
+    $('#progress-deadline').html(`${detail.DEADLINE.days} Hari lagi`)
     $('#progress-detail-btn').data('id', detail.ID_DETAIL_ACTIVITY)
     $('#progress-reschedule-btn').data('id', detail.ID_DETAIL_ACTIVITY)
     $('#progress-activity-modal').modal('show')

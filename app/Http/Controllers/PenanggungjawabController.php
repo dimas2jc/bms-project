@@ -67,6 +67,16 @@ class PenanggungjawabController extends Controller
             $pic_name = DB::table('user')->where('ID_USER', $pic_id)->value('NAMA');
 
             $detail_activity[$i]['PIC'] = $pic_name;
+
+            // Progress
+            if(DB::table('progress')->where('ID_DETAIL_ACTIVITY', $detail_activity[$i]['ID_DETAIL_ACTIVITY'])->exists()){
+
+                $progress = DB::table('progress')->orderByDesc('created_at')->first();
+                $detail_activity[$i]['PROGRESS'] = $progress->PROGRESS;
+
+            } else {
+                $detail_activity[$i]['PROGRESS'] = 0;
+            }
         }
 
         return view('pic.timetable', compact('category_activity', 'detail_activity', 'outlet', 'pic', 'timeplan', 'log'));

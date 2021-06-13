@@ -227,16 +227,26 @@
                             
                             <div class="form-group">
                                 <label>Progress</label>
-                                <div class="progress" style="height: 20px;">
-                                    <div class="progress-bar bg-light" role="progressbar" style="width: 100%; color: #000;">0%</div>
+                                <div class="progress" style="position: relative; height:20px;">
+                                    <div id="progress-percentage-bar" class="progress-bar" role="progressbar" style="width: 30%;"></div>
+                                    <div id="progress-percentage-text" class="progress-bar-title"
+                                                    style="position: absolute;
+                                                            text-align: center;
+                                                            line-height: 20px;
+                                                            overflow: hidden;
+                                                            color: #fff;
+                                                            right: 0;
+                                                            left: 0;
+                                                            top: 0;
+                                                            color: black;">
+                                    30%
+                                    </div>
                                 </div>
                             </div>
                             
-                            <div class="form-group">
-                                <label>Deadline</label>
-                                <div class="progress" style="height: 20px;">
-                                    <div class="progress-bar bg-warning" role="progressbar" id="detail_durasi" style="width: 75%"></div>
-                                </div>
+                            <div class="form-group mt-3">
+                                <label>Deadline: </label>
+                                <span id="progress-deadline"></span>
                             </div>
                         </div>
                         <div class="modal-footer">
