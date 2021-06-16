@@ -193,9 +193,10 @@ function put_tanggal_penting_into_table(activity){
  * Menghitung durasi antara start date dan end date
  * pada form input activity
  */
-function calculate_activity_duration(){
+ function calculate_activity_duration(){
     let start_date = $('#input_tanggal_mulai').val()
     let end_date = $('#input_tanggal_selesai').val()
+    let durasi
 
     if(start_date != '' && end_date != ''){
         start_date = new Date(start_date)
@@ -206,13 +207,43 @@ function calculate_activity_duration(){
         durasi = diff_in_days
 
         if(diff_in_days < 0){
-            $('#input_durasi').val('Tanggal mulai tidak boleh melebihi tanggal selesai')
+            $('#input_durasi').val('')
+            $('#input_durasi_error_msg').css('display', 'block')
         } else {
-            $('#input_durasi').val(`${diff_in_days + 1} Hari`)
+            $('#input_durasi').val(`${diff_in_days + 1}`)
+            $('#input_durasi_error_msg').css('display', 'none')
         }
+    }
+}
 
-    } else {
-        $('#input_durasi').val('Tentukan tanggal mulai dan tanggal selesai')
+function update_date_from_duration(){
+    let start_date = $('#input_tanggal_mulai').val()
+    let end_date = $('#input_tanggal_selesai').val()
+    let durasi = $('#input_durasi').val()
+
+    if(start_date != '' || start_date != null){
+        let tmp_end_date = new Date()
+            start_date = new Date(start_date)
+            tmp_end_date.setDate(start_date.getDate() + (parseInt(durasi) - 1))
+            let res_year = String(tmp_end_date.getFullYear())
+            let res_month = parseInt(tmp_end_date.getMonth() + 1)
+            let res_date = parseInt(tmp_end_date.getDate())
+            
+            if(res_month < 10){
+                res_month = `0${String(res_month)}`
+            } else {
+                res_month = String(res_month)
+            }
+            
+            if(res_date < 10){
+                res_date = `0${String(res_date)}`
+            } else {
+                res_date = String(res_date)
+            }
+
+            let res = `${res_year}-${res_month}-${res_date}`
+
+            $('#input_tanggal_selesai').val(res)
     }
 }
 

@@ -168,7 +168,14 @@
 
                             <div class="form-group">
                                 <label>Durasi</label>
-                                <input type="text" id="input_durasi" class="form-control" readonly style="cursor: not-allowed;" value="Tentukan tanggal mulai dan tanggal selesai">
+                                
+                                <div class="input-group">
+                                    <input type="number" id="input_durasi" onchange="update_date_from_duration()" class="form-control" min="1">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">Hari</span>
+                                    </div>
+                                </div>
+                                
                                 <small id="input_durasi_error_msg" class="text-danger" style="display: none;">Durasi tidak valid</small>
                             </div>
 
