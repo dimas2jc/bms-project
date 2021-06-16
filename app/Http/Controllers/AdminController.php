@@ -12,6 +12,9 @@ use App\Models\Outlet;
 use App\Models\Timeplan;
 use App\Models\Progress;
 use App\Models\UserLog;
+use App\Models\CategoryCalendar;
+use App\Models\Calendar;
+use App\Models\DetailCategoryCalendar;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -203,76 +206,134 @@ class AdminController extends Controller
             'created_at' => Carbon::now()
         ]);
 
-        return redirect('admin/category');
+        return redirect('admin/category-timetable');
     }
 
     public function editCategory(Request $request)
     {
         CategoryActivity::findOrFail($request->id)->update(['NAMA' => $request->nama, 'updated_at' => Carbon::now()]);
 
-        return redirect('admin/category');
+        return redirect('admin/category-timetable');
+    }
+
+    public function category_calendar()
+    {
+        $data = CategoryCalendar::all();
+
+        return view('admin.category-calendar', compact('data'));
+    }
+
+    public function storeCategoryCalendar(Request $request)
+    {
+        CategoryCalendar::insert([
+            'ID_CATEGORY_CALENDAR' => Uuid::uuid4()->getHex(),
+            'NAMA' => $request->nama,
+            'created_at' => Carbon::now()
+        ]);
+
+        return redirect('admin/category-calendar');
+    }
+
+    public function editCategoryCalendar(Request $request)
+    {
+        CategoryCalendar::findOrFail($request->id)->update(['NAMA' => $request->nama, 'updated_at' => Carbon::now()]);
+
+        return redirect('admin/category-calendar');
     }
 
     public function calendar()
     {
         $outlet = Outlet::all()->toArray();
-        $category_activity = null;
-        $detail_activity = null;
-        $timeplan = null;
+        $data = null;
 
-        return view('admin.calendar', compact('category_activity', 'detail_activity', 'outlet', 'timeplan'));
+        return view('admin.calendar', compact('data', 'outlet'));
+    }
+
+    public function index_tambah_calendar()
+    {
+        $outlet = Outlet::all();
+        $category = CategoryCalendar::all();
+
+        return view('admin.tambah-calendar', compact('outlet', 'category'));
+    }
+
+    public function storeCalendar(Request $request)
+    {
+        Calendar::insert([
+            'ID_CALENDAR' => Uuid::uuid4()->getHex(),
+            'ID_CATEGORY_CALENDAR' => $request->category,
+            'JUDUL' => $request->judul,
+            'DESKRIPSI' => $request->deskripsi,
+            'TANGGAL_START' => $request->date_start,
+            'TANGGAL_END' => $request->date_end,
+            'created_at' => Carbon::now()
+        ]);
+
+        for($i = 0; $i < count($request->outlet); $i++){
+            DetailCategoryCalendar::insert([
+                'ID_OUTLET' => $request->outlet[$i],
+                'ID_CATEGORY_CALENDAR' => $request->category,
+                'created_at' => Carbon::now()
+            ]);
+        };
+
+        return redirect('admin/calendar');
     }
 
     public function updateCalendar(Request $request)
     {
-        $nama_file = null;
-
-        if($request->file('file') != null)
-        {
-            $file = $request->file('file');
-            $nama_file = $file->getClientOriginalName();
-            $file->move('assets/dokumen/', $nama_file);
-        }
-
-        Progress::insert([
-            'ID_PROGRESS' => Uuid::uuid4()->getHex(),
-            'ID_DETAIL_ACTIVITY' => $request->id,
-            'KETERANGAN' => $request->keterangan,
-            'FILE' => $nama_file
+        Calendar::where('ID_CALENDAR', '=', $request->id)->update([
+            'JUDUL' => $request->judul,
+            'DESKRIPSI' => $request->deskripsi,
+            'TANGGAL_START' => $request->date_start,
+            'TANGGAL_END' => $request->date_end,
+            'updated_at' => Carbon::now()
         ]);
 
-        return redirect('admin/calendar/'.$request->category);
+        return redirect('admin/calendar');
     }
 
-    public function getCategory($outlet)
-    {
-        $data = CategoryActivity::where('ID_OUTLET', '=', $outlet)->get();
-
-        return response()->json(["success" => true, "data" => $data]);
-    }
-
-    public function getCalendar($id_category)
+    public function getCalendar($outlet)
     {
         $outlet = Outlet::all()->toArray();
-        $category_activity = CategoryActivity::orderBy('created_at', 'ASC')->first()->toArray();
-        $detail_activity = DetailActivity::where('ID_CATEGORY', '=', $id_category)->orderBy('created_at', 'ASC')->get()->toArray();
-        $timeplan = Timeplan::orderBy('created_at', 'ASC')->get()->toArray();
+        $detail_category = DetailCategoryCalendar::where('ID_OUTLET', '=', $outlet)->get()->toArray();
+        $category_calendar = CategoryCalendar::orderBy('created_at', 'ASC')->get()->toArray();
+        $calendar = Calendar::orderBy('created_at', 'ASC')->get()->toArray();
 
-        for($i = 0; $i < count($detail_activity); $i++){
-            for($j = 0; $j < count($timeplan); $j++){
-                if($timeplan[$j]['ID_DETAIL_ACTIVITY'] == $detail_activity[$i]['ID_DETAIL_ACTIVITY']){
-                    $tanggal_mulai = $timeplan[$j]['TANGGAL_START'];
-                    $tanggal_selesai = $timeplan[$j]['TANGGAL_END'];
-                    $durasi = date_diff(date_create($tanggal_mulai), date_create($tanggal_selesai));
-
-                    $detail_activity[$i]['TANGGAL_START'] = date('Y-m-d', strtotime($tanggal_mulai));
-                    $detail_activity[$i]['TANGGAL_END'] = date('Y-m-d', strtotime($tanggal_selesai));
-                    $detail_activity[$i]['DURASI'] = $durasi;
+        $category = [];
+        for($i = 0; $i < count($detail_category); $i++){
+            for($j = 0; $j < count($category_calendar); $j++){
+                if($category_calendar[$j]['ID_CATEGORY_CALENDAR'] == $detail_category[$i]['ID_CATEGORY_CALENDAR']){
+                    $category[] = $category_calendar[$j];
                 }
             }
         }
 
-        return view('admin.calendar', compact('category_activity', 'detail_activity', 'outlet', 'timeplan'));
+        $data = [];
+        for($k = 0; $k < count($category); $k++){
+            for($l = 0; $l < count($calendar); $l++){
+                if($calendar[$l]['ID_CATEGORY_CALENDAR'] == $category[$k]['ID_CATEGORY_CALENDAR']){
+                    $calendar[$l]['CATEGORY'] = $category[$k]['NAMA'];
+                    $tanggal_mulai = $calendar[$l]['TANGGAL_START'];
+                    $tanggal_selesai = $calendar[$l]['TANGGAL_END'];
+                    $durasi = date_diff(date_create($tanggal_mulai), date_create($tanggal_selesai));
+                    
+                    $data[$l] = $calendar[$l];
+                    $data[$l]['TANGGAL_START'] = date('Y-m-d', strtotime($tanggal_mulai));
+                    $data[$l]['TANGGAL_END'] = date('Y-m-d', strtotime($tanggal_selesai));
+                    $data[$l]['DURASI'] = $durasi;
+                }
+            }
+        }
+
+        return view('admin.calendar', compact('data', 'category', 'outlet'));
+    }
+
+    public function getDetailCalendar($id)
+    {
+        $data = Calendar::where('ID_CALENDAR', '=', $id)->first();
+
+        return view('admin.detail-calendar', compact('data'));
     }
 
     public function download_file(Request $request)

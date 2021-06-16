@@ -52,10 +52,14 @@
 					<li><a href="{!! url('/admin/user-investor'); !!}">Investor</a></li>
 				</ul>
 			</li>
-			<li><a href="{{ url('admin/category') }}" aria-expanded="false">
+			<li><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
 					<i class="fa fa-filter" aria-hidden="true"></i>
 					<span class="nav-text">Category</span>
 				</a>
+				<ul aria-expanded="false">
+					<li><a href="{!! url('/admin/category-timetable'); !!}">Category Timetable</a></li>
+					<li><a href="{!! url('/admin/category-calendar'); !!}">Category Calendar</a></li>
+				</ul>
 			</li>
 			@endif
 		</ul>

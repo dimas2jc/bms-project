@@ -7,36 +7,35 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * Class Outlet
+ * Class DetailCategoryCalendar
  * 
  * @property string $ID_OUTLET
- * @property string $NAMA
+ * @property string $ID_CATEGORY_CALENDAR
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property string|null $deleted_at
  * 
- * @property Collection|CategoryActivity[] $category_activities
+ * @property CategoryCalendar $category_calendar
  *
  * @package App\Models
  */
-class Outlet extends Model
+class DetailCategoryCalendar extends Model
 {
 	use SoftDeletes;
-	protected $table = 'outlet';
-	protected $primaryKey = 'ID_OUTLET';
+	protected $table = 'detail_category_calendar';
 	public $incrementing = false;
 
 	protected $fillable = [
-		'NAMA'
+		'ID_OUTLET',
+		'ID_CATEGORY_CALENDAR'
 	];
 
-	public function category_activities()
+	public function category_calendar()
 	{
-		return $this->hasMany(CategoryActivity::class, 'ID_OUTLET');
+		return $this->belongsTo(CategoryCalendar::class, 'ID_CATEGORY_CALENDAR');
 	}
 }

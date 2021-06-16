@@ -6,6 +6,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -13,11 +14,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 /**
  * Class DetailActivity
  * 
- * @property int $ID_DETAIL_ACTIVITY
- * @property int $ID_CATEGORY
+ * @property string $ID_DETAIL_ACTIVITY
+ * @property string $ID_CATEGORY
  * @property string $NAMA_AKTIFITAS
  * @property int $STATUS
  * @property int|null $FLAG
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property string|null $deleted_at
  * 
  * @property CategoryActivity $category_activity
  * @property Collection|Progress[] $progress
@@ -27,10 +31,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class DetailActivity extends Model
 {
+	use SoftDeletes;
 	protected $table = 'detail_activity';
 	protected $primaryKey = 'ID_DETAIL_ACTIVITY';
-	protected $keyType = "string";
-	use SoftDeletes;
+	public $incrementing = false;
 
 	protected $casts = [
 		'STATUS' => 'int',

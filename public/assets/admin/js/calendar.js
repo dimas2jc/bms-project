@@ -2,32 +2,18 @@
     "use strict";
     // Data Timeplan
     const data = [];
-    if(DETAIL_ACTIVITY != null){
-        for(let x = 0; x < DETAIL_ACTIVITY.length; x++){
+    if(DATA != null){
+        for(let x = 0; x < DATA.length; x++){
             data[x] = {
-                days: DETAIL_ACTIVITY[x].DURASI.days,
-                title: DETAIL_ACTIVITY[x].NAMA_AKTIFITAS,
-                start: DETAIL_ACTIVITY[x].TANGGAL_START,
-                end: moment(DETAIL_ACTIVITY[x].TANGGAL_END).add(1, "days").toDate(),
-                id: DETAIL_ACTIVITY[x].ID_DETAIL_ACTIVITY
+                days: DATA[x].DURASI.days,
+                title: DATA[x].JUDUL,
+                start: DATA[x].TANGGAL_START,
+                end: moment(DATA[x].TANGGAL_END).add(1, "days").toDate(),
+                id: DATA[x].ID_CALENDAR,
+                des: DATA[x].DESKRIPSI
             };
         };
     }
-
-    // Init Modal Update
-    const modalUpdate = '<div class="form-group">'+
-                            '<label>Dokumen</label><br>'+
-                            '<input type="file" name="file" accept=".pdf, image/*"><br>'+
-                            '<small style="color: red; font-style: italic">Format file .pdf dan gambar</small>'+
-                        '</div>'+
-                        '<div class="form-group">'+
-                            '<label>Keterangan</label>'+
-                            '<textarea name="keterangan" class="form-control input-default"></textarea>'+
-                        '</div>';
-    const footer = '<div class="modal-footer">'+
-                        '<button type="button" class="btn btn-sm btn-light btn-rounded px-3" data-dismiss="modal">Cancel</button>'+
-                        '<button type="submit" class="btn btn-sm btn-primary btn-rounded px-3 save-event">Save</button>'+
-                    '</div>';
 
     var t = function() {
         this.$body = e("body"), 
@@ -49,18 +35,20 @@
     }, 
     t.prototype.onEventClick = function(t, n, a) {
         var o = this,
+        modalUpdate = '<p>Agenda : '+t.title+'.',
+        footer = '<div class="modal-footer">'+
+                            '<button type="button" class="btn btn-sm btn-light btn-rounded px-3" data-dismiss="modal">Cancel</button>'+
+                            '<a href="'+urlDetail+'/'+t.id+'"><button type="button" class="btn btn-sm btn-primary btn-rounded px-3 save-event">Detail</button></a>'+
+                        '</div>',
         
-            i = e('<form action="'+urlUpdate+'" id="form-update" method="POST" enctype="multipart/form-data"></form>');
-        i.append("<input type='hidden' name='id' value='"+t.id+"'>"),
-        i.append("<input type='hidden' name='_token' value='"+token+"'>"),
-        i.append("<input type='hidden' name='category' value='"+CATEGORY_ACTIVITY.ID_CATEGORY+"'>")
+        i = e('<form></form>');
         i.append(modalUpdate),
         o.$modal.find(".modal-footer").hide(),
         i.append(footer),
         o.$modal.modal({
             backdrop: "static"
         }),
-        o.$modal.find(".modal-title").after().empty().end().find(".modal-title").append("<strong>"+t.title+"</strong>"),
+        o.$modal.find(".modal-title").after().empty().end().find(".modal-title").append("<strong>Agenda</strong>"),
         o.$modal.find(".delete-event").hide().end().find(".save-event").hide().end().find(".modal-body").empty().prepend(i).end();
     }, 
     t.prototype.onSelect = function(t, n, a) {
@@ -145,35 +133,9 @@ function(e) {
 $(function(){
     $('select').select2();
 
-    //ambil kategori ketika outlet dipilih
+    // Menampilkan kalender setelah outlet dipilih
     $('#outlet').change(function(){
-        $("#category").empty();
         var outlet = $(this).val();
-        $.ajax({
-            type: 'GET',
-            url: "/admin/getCategory/"+outlet,
-            success: function (results) {
-                if (results.success === true) {
-                    $("#category").empty();
-                    var option = new Option("Pilih Kategori..", true);
-                    $("#category").append(option);
-                    results.data.forEach(addOption)
-                    function addOption(item, index, arr){
-                        let text = item.NAMA;
-                        let val = item.ID_CATEGORY;
-                        var o = new Option(text, val);
-                        $(o).html(text);
-                        $("#category").append(o);
-                        $("#category").select2();
-                    }
-                }
-            }
-        });
+        window.location.replace(urlCalendar+"/"+outlet);
     });
-
-    //menampilkan calendar sesuai category
-    $('#category').change(function(){
-        var category = $(this).val();
-        window.location.replace(urlCalendar+"/"+category);
-    })
 });

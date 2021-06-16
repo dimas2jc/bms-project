@@ -6,17 +6,21 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class Progress
  * 
- * @property int $ID_PROGRESS
- * @property int $ID_DETAIL_ACTIVITY
- * @property string $PROGRESS
+ * @property string $ID_PROGRESS
+ * @property string $ID_DETAIL_ACTIVITY
+ * @property string|null $PROGRESS
  * @property string|null $KETERANGAN
  * @property string|null $FILE
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property string|null $deleted_at
  * 
  * @property DetailActivity $detail_activity
  *
@@ -24,11 +28,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Progress extends Model
 {
+	use SoftDeletes;
 	protected $table = 'progress';
 	protected $primaryKey = 'ID_PROGRESS';
-	protected $keyType = "string";
-	use SoftDeletes;
-
+	public $incrementing = false;
 
 	protected $fillable = [
 		'ID_DETAIL_ACTIVITY',

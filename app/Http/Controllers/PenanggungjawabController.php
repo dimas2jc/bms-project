@@ -140,9 +140,12 @@ class PenanggungjawabController extends Controller
             'created_at' => Carbon::now()
         ]);
 
+        // Cek progress
+        $progress = Progress::where('ID_DETAIL_ACTIVITY', '=', $request->id_detail_activity)->sum('PROGRESS');
+
         // Jika progress 100%
-        if($request->progress == "100"){
-            DetailActivity::update([
+        if($progress == "100"){
+            DetailActivity::where('ID_DETAIL_ACTIVITY', '=', $request->id_detail_activity)->update([
                 'STATUS' => 1,
                 'updated_at' => Carbon::now()
             ]);

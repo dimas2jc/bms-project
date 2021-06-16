@@ -49,7 +49,8 @@ Route::group(['middleware' => ['auth']],function(){
     Route::get('admin/calendar', [AdminController::class, 'calendar']);
     Route::get('admin/user-pic', [AdminController::class, 'userPIC']);
     Route::get('admin/user-investor', [AdminController::class, 'userInvestor']);
-    Route::get('admin/category', [AdminController::class, 'category']);
+    Route::get('admin/category-timetable', [AdminController::class, 'category']);
+    Route::get('admin/category-calendar', [AdminController::class, 'category_calendar']);
 
     Route::post('admin/tambah-pic', [AdminController::class, 'storePIC']);
     Route::post('admin/edit-pic', [AdminController::class, 'editPIC']);
@@ -61,10 +62,14 @@ Route::group(['middleware' => ['auth']],function(){
 
     Route::post('admin/tambah-kategori', [AdminController::class, 'storeCategory']);
     Route::post('admin/edit-kategori', [AdminController::class, 'editCategory']);
+    Route::post('admin/tambah-kategori-kalender', [AdminController::class, 'storeCategoryCalendar']);
+    Route::post('admin/edit-kategori-kalender', [AdminController::class, 'editCategoryCalendar']);
 
-    Route::post('admin/calendar/update', [AdminController::class, 'updateCalendar']);
-    Route::get('admin/getCategory/{outlet}', [AdminController::class, 'getCategory']);
-    Route::get('admin/calendar/{id_category}', [AdminController::class, 'getCalendar']);
+    Route::get('admin/calendar/{outlet}', [AdminController::class, 'getCalendar']);
+    Route::get('admin/calendar/detail/{id}', [AdminController::class, 'getDetailCalendar']);
+    Route::get('admin/tambah-calendar', [AdminController::class, 'index_tambah_calendar']);
+    Route::post('admin/tambah-calendar', [AdminController::class, 'storeCalendar']);
+    Route::post('admin/edit-calendar', [AdminController::class, 'updateCalendar']);
 
     Route::get('admin/download', [AdminController::class, 'download_file']);
     

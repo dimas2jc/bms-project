@@ -159,6 +159,8 @@
 	<!-- Svganimation scripts -->
     <script src="{{asset('metroadmin/vendor/svganimation/vivus.min.js')}}"></script>
     <script src="{{asset('metroadmin/vendor/svganimation/svg.animation.js')}}"></script>
+
+    <script src="//cdn.ckeditor.com/4.14.1/standard/ckeditor.js"></script>
     
     @yield('extra-script')
 

@@ -11,25 +11,25 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * Class Timeplan
+ * Class Calendar
  * 
- * @property string $ID_TIMEPLAN
- * @property string $ID_DETAIL_ACTIVITY
- * @property Carbon $TANGGAL_START
- * @property Carbon $TANGGAL_END
+ * @property string $ID_CALENDAR
+ * @property string $ID_CATEGORY_CALENDAR
+ * @property string $JUDUL
+ * @property string $DESKRIPSI
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property string|null $deleted_at
  * 
- * @property DetailActivity $detail_activity
+ * @property CategoryCalendar $category_calendar
  *
  * @package App\Models
  */
-class Timeplan extends Model
+class Calendar extends Model
 {
 	use SoftDeletes;
-	protected $table = 'timeplan';
-	protected $primaryKey = 'ID_TIMEPLAN';
+	protected $table = 'calendar';
+	protected $primaryKey = 'ID_CALENDAR';
 	public $incrementing = false;
 
 	protected $dates = [
@@ -38,13 +38,15 @@ class Timeplan extends Model
 	];
 
 	protected $fillable = [
-		'ID_DETAIL_ACTIVITY',
+		'ID_CATEGORY_CALENDAR',
+		'JUDUL',
+		'DESKRIPSI',
 		'TANGGAL_START',
 		'TANGGAL_END'
 	];
 
-	public function detail_activity()
+	public function category_calendar()
 	{
-		return $this->belongsTo(DetailActivity::class, 'ID_DETAIL_ACTIVITY');
+		return $this->belongsTo(CategoryCalendar::class, 'ID_CATEGORY_CALENDAR');
 	}
 }
