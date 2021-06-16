@@ -327,7 +327,7 @@
 
             <!-- Detail activity modal -->
             <div class="modal fade" id="detail-activity-modal" tabindex="-1" data-backdrop="static">
-                <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+                <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title">Detail Activity</h5>
@@ -336,42 +336,107 @@
                             </button>
                         </div>
                         <div class="modal-body">
+                            <!-- Nav tabs -->
+                            <div class="default-tab">
+                                <ul class="nav nav-tabs" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" data-toggle="tab" href="#log">Log Jadwal</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="tab" href="#progress">Progress</a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div class="tab-pane fade active show" id="log" role="tabpanel">
+                                        <div class="pt-4">
+                                            <h5 class="detail_nama_activity text-center mb-4"></h5>
 
-                            <div class="form-group">
-                                <label>Outlet</label>
-                                <input type="text" id="detail_outlet" class="form-control" readonly style="cursor: not-allowed;">
-                            </div>
+                                            <div class="form-group">
+                                                <label>PIC</label>
+                                                <input type="text" id="detail_pic" class="form-control" readonly style="cursor: not-allowed;">
+                                            </div>
 
-                            <div class="form-group">
-                                <label>Category</label>
-                                <input type="text" id="detail_category" class="form-control" readonly style="cursor: not-allowed;">
-                            </div>
+                                            <div class="form-group">
+                                                <label>Timeline</label>
+                                                <input type="text" id="detail_tanggal" class="form-control" readonly style="cursor: not-allowed;">
+                                            </div>
 
-                            <div class="form-group">
-                                <label>Nama Activity</label>
-                                <input type="text" id="detail_nama_activity" class="form-control" readonly style="cursor: not-allowed;">
-                            </div>
+                                            <div class="table-responsive mt-4">
+                                                <table class="table table-bordered table-sm">
+                                                    <thead class="bg-secondary"  style="color: white;">
+                                                        <tr>
+                                                            <td>No.</td>
+                                                            <th>Created At</th>
+                                                            <th>Tanggal Mulai</th>
+                                                            <th>Tanggal Selesai</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="log-jadwal-tbody"></tbody>
+                                                </table>
+                                            </div>
 
-                            <div class="form-group">
-                                <label>Tanggal Mulai</label>
-                                <input type="text" id="detail_tanggal_mulai" class="form-control" readonly style="cursor: not-allowed;">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label>Tanggal Selesai</label>
-                                <input type="text" id="detail_tanggal_selesai" class="form-control" readonly style="cursor: not-allowed;">
-                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="progress">
+                                        <div class="pt-4">
+                                            <h5 class="detail_nama_activity text-center mb-4"></h5>
 
-                            <div class="form-group">
-                                <label>Durasi</label>
-                                <input type="text" id="detail_durasi" class="form-control" readonly style="cursor: not-allowed;">
-                            </div>
+                                            <div class="form-group">
+                                                <label>Total Progress</label>
+                                                <div class="progress" style="position: relative; height:20px;">
+                                                    <div id="detail-percentage-bar" class="progress-bar" role="progressbar" style="width: 30%;"></div>
+                                                    <div id="detail-percentage-text" class="progress-bar-title"
+                                                                    style="position: absolute;
+                                                                            text-align: center;
+                                                                            line-height: 20px;
+                                                                            overflow: hidden;
+                                                                            color: #fff;
+                                                                            right: 0;
+                                                                            left: 0;
+                                                                            top: 0;
+                                                                            color: black;">
+                                                    0%
+                                                    </div>
+                                                </div>
+                                            </div>
 
-                            <div class="form-group">
-                                <label>PIC</label>
-                                <input type="text" id="detail_pic" class="form-control" readonly style="cursor: not-allowed;">
-                            </div>
+                                            {{-- <div class="form-group">
+                                                <label>Keterangan</label>
+                                                <textarea id="keterangan" class="form-control input-default" style="cursor: not-allowed;">Tidak ada keterangan</textarea>
+                                            </div> --}}
+                                            
+                                            {{-- <div class="form-group">
+                                                <label>File</label>
+                                                <input type="text" id="nama_file" class="form-control" value="Tidak ada file" readonly style="cursor: not-allowed;"><br>
+                                                <form action="{{url('admin/download')}}" method="POST">
+                                                    <input type="hidden" name="id" id="id_progress">
+                                                    <button type="submit" id="download" class="btn btn-sm btn-success">
+                                                        <i class="fa fa-download mr-1" aria-hidden="true"></i>
+                                                        DOWNLOAD
+                                                    </button>
+                                                </form>
+                                            </div> --}}
 
+                                            <div class="table-responsive mt-4">
+                                                <table class="table table-bordered table-sm">
+                                                    <thead class="bg-secondary"  style="color: white;">
+                                                        <tr>
+                                                            <td>No.</td>
+                                                            <th>Created At</th>
+                                                            <th>Progress</th>
+                                                            <th>Keterangan</th>
+                                                            <th>File</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="detail-progress-tbody"></tbody>
+                                                </table>
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-sm btn-light btn-rounded px-3" data-dismiss="modal">

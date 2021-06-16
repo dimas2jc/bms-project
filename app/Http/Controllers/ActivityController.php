@@ -12,6 +12,25 @@ use Ramsey\Uuid\Uuid;
 
 class ActivityController extends Controller
 {
+    
+    public function log_jadwal($id_detail_activity)
+    {
+        $id = $id_detail_activity;
+        $result = DB::table('timeplan')->where('ID_DETAIL_ACTIVITY', $id)
+                    ->orderByDesc('created_at')->get()->toArray();
+
+        return $result;
+    }
+    
+    public function progress($id_detail_activity)
+    {
+        $id = $id_detail_activity;
+        $result = DB::table('progress')->where('ID_DETAIL_ACTIVITY', $id)
+                    ->orderByDesc('created_at')->get()->toArray();
+
+        return $result;
+    }
+    
     public function store(Request $request)
     {
         // dd($request->all());
