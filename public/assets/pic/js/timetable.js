@@ -327,13 +327,78 @@ function view_detail_activity(activity_el){
         }
     }
 
-    $('#detail_outlet').val(detail.OUTLET)
-    $('#detail_category').val(detail.CATEGORY)
-    $('#detail_nama_activity').val(detail.NAMA_AKTIFITAS)
-    $('#detail_tanggal_mulai').val(detail.TANGGAL_START)
-    $('#detail_tanggal_selesai').val(detail.TANGGAL_END)
-    $('#detail_durasi').val(`${detail.DURASI.days + 1} Hari`)
+    $('.detail_nama_activity').html(detail.NAMA_AKTIFITAS)
+    $('#detail_tanggal').val(detail.TANGGAL_START +" - "+ detail.TANGGAL_END)
     $('#detail_pic').val(detail.PIC)
+
+    // Log jadwal
+    $.ajax({
+        type: 'GET',
+        headers: {
+            'X-CSRF-TOKEN': CSRF_TOKEN
+        },
+        url: `${BASE_URL}/activity/log-jadwal/${detail.ID_DETAIL_ACTIVITY}`,
+        async: false,
+        success: function(data){
+            $('#log-jadwal-tbody').empty()
+
+            for(let i = 0; i < data.length; i++){
+                let tr =    `<tr style="color: black;">
+                                <td>${i + 1}</td>
+                                <td>${data[i].created_at}</td>
+                                <td>${data[i].TANGGAL_START}</td>
+                                <td>${data[i].TANGGAL_END}</td>
+                            </tr>`
+
+                $('#log-jadwal-tbody').append(tr)
+            }
+        }
+    })
+    
+    // Progress
+    $.ajax({
+        type: 'GET',
+        headers: {
+            'X-CSRF-TOKEN': CSRF_TOKEN
+        },
+        url: `${BASE_URL}/activity/progress/${detail.ID_DETAIL_ACTIVITY}`,
+        async: false,
+        success: function(data){
+            $('#detail-progress-tbody').empty()
+            let total_progress = 0
+            let td_file
+
+            for(let i = 0; i < data.length; i++){
+                total_progress += parseFloat(data[i].PROGRESS)
+                
+                if(data[i].FILE != null){
+                    td_file = `<a href="${BASE_URL}/admin/get-file/${data[i].ID_PROGRESS}" class="btn btn-sm btn-light" target="_blank">
+                                <i class="fa fa-download mr-1"></i>
+                                Download
+                                </a>`
+                } else {
+                    td_file = 'Tidak ada file'
+                }
+
+                if(data[i].KETERANGAN == null){
+                    data[i].KETERANGAN = 'Tidak ada keterangan'
+                }
+
+                let tr =    `<tr style="color: black;">
+                                <td>${i + 1}</td>
+                                <td>${data[i].created_at}</td>
+                                <td>${data[i].PROGRESS}%</td>
+                                <td>${data[i].KETERANGAN}</td>
+                                <td>${td_file}</td>
+                            </tr>`
+
+                $('#detail-progress-tbody').append(tr)
+            }
+
+            $('#detail-percentage-text').html(`${total_progress}%`)
+            $('#detail-percentage-bar').css('width', `${total_progress}%`)
+        }
+    })
 
     $('#detail-activity-modal').modal('show')
 }

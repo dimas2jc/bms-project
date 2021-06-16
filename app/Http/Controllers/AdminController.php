@@ -344,6 +344,14 @@ class AdminController extends Controller
         return response()->download($file, $data->FILE);
     }
 
+    public function get_file($progress_id)
+    {
+        $data = Progress::where('ID_PROGRESS', '=', $progress_id)->first();
+        $file = public_path()."/assets/dokumen/".$data->FILE;
+
+        return response()->download($file, $data->FILE);
+    }
+
     private function check_activity_status($start_date, $end_date, $status)
     {
         $result = '';

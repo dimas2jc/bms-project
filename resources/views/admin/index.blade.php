@@ -329,7 +329,7 @@
 
             <!-- Detail activity modal -->
             <div class="modal fade" id="detail-activity-modal" tabindex="-1" data-backdrop="static">
-                <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+                <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title">Detail Activity</h5>
@@ -351,7 +351,7 @@
                                 <div class="tab-content">
                                     <div class="tab-pane fade active show" id="log" role="tabpanel">
                                         <div class="pt-4">
-                                            <h5 class="detail_nama_activity"></h5>
+                                            <h5 class="detail_nama_activity text-center mb-4"></h5>
 
                                             <div class="form-group">
                                                 <label>PIC</label>
@@ -363,14 +363,28 @@
                                                 <input type="text" id="detail_tanggal" class="form-control" readonly style="cursor: not-allowed;">
                                             </div>
 
+                                            <div class="table-responsive mt-4">
+                                                <table class="table table-bordered table-sm">
+                                                    <thead class="bg-secondary"  style="color: white;">
+                                                        <tr>
+                                                            <td>No.</td>
+                                                            <th>Created At</th>
+                                                            <th>Tanggal Mulai</th>
+                                                            <th>Tanggal Selesai</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="log-jadwal-tbody"></tbody>
+                                                </table>
+                                            </div>
+
                                         </div>
                                     </div>
                                     <div class="tab-pane fade" id="progress">
                                         <div class="pt-4">
-                                            <h5 class="detail_nama_activity"></h5>
+                                            <h5 class="detail_nama_activity text-center mb-4"></h5>
 
                                             <div class="form-group">
-                                                <label>Progress</label>
+                                                <label>Total Progress</label>
                                                 <div class="progress" style="position: relative; height:20px;">
                                                     <div id="detail-percentage-bar" class="progress-bar" role="progressbar" style="width: 30%;"></div>
                                                     <div id="detail-percentage-text" class="progress-bar-title"
@@ -388,12 +402,12 @@
                                                 </div>
                                             </div>
 
-                                            <div class="form-group">
+                                            {{-- <div class="form-group">
                                                 <label>Keterangan</label>
                                                 <textarea id="keterangan" class="form-control input-default" style="cursor: not-allowed;">Tidak ada keterangan</textarea>
-                                            </div>
+                                            </div> --}}
                                             
-                                            <div class="form-group">
+                                            {{-- <div class="form-group">
                                                 <label>File</label>
                                                 <input type="text" id="nama_file" class="form-control" value="Tidak ada file" readonly style="cursor: not-allowed;"><br>
                                                 <form action="{{url('admin/download')}}" method="POST">
@@ -403,7 +417,23 @@
                                                         DOWNLOAD
                                                     </button>
                                                 </form>
+                                            </div> --}}
+
+                                            <div class="table-responsive mt-4">
+                                                <table class="table table-bordered table-sm">
+                                                    <thead class="bg-secondary"  style="color: white;">
+                                                        <tr>
+                                                            <td>No.</td>
+                                                            <th>Created At</th>
+                                                            <th>Progress</th>
+                                                            <th>Keterangan</th>
+                                                            <th>File</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="detail-progress-tbody"></tbody>
+                                                </table>
                                             </div>
+
 
                                         </div>
                                     </div>
@@ -419,7 +449,7 @@
                     </div>
                 </div>
             </div>
-            <!-- ./Add timeplan activity modal -->
+            <!-- ./Detail activity modal -->
 @endsection
 
 @section('extra-script')

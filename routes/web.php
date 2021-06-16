@@ -71,9 +71,12 @@ Route::group(['middleware' => ['auth']],function(){
     Route::post('admin/tambah-calendar', [AdminController::class, 'storeCalendar']);
     Route::post('admin/edit-calendar', [AdminController::class, 'updateCalendar']);
 
-    Route::get('admin/download', [AdminController::class, 'download_file']);
+    Route::get('/admin/download', [AdminController::class, 'download_file']);
+    Route::get('/admin/get-file/{progress_id}', [AdminController::class, 'get_file']);
     
     // Activity
+    Route::get('/activity/log-jadwal/{id_detail_activity}', [ActivityController::class, 'log_jadwal']);
+    Route::get('/activity/progress/{id_detail_activity}', [ActivityController::class, 'progress']);
     Route::get('/admin/timeline/test', [ActivityController::class, 'test']);
     Route::post('/admin/activity/timeline', [ActivityController::class, 'activity_timeline']);
     Route::post('/admin/activity', [ActivityController::class, 'store']);
