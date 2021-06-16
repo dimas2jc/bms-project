@@ -86,13 +86,25 @@ class PenanggungjawabController extends Controller
     {
         $pic = Auth::user()->ID_USER;
         $log = UserLog::where('user', '=', $pic)->get();
-        $activity = Progress::join('detail_activity as d', 'd.ID_DETAIL_ACTIVITY', '=', 'progress.ID_DETAIL_ACTIVITY')->get();
+        // $activity = Progress::join('detail_activity as d', 'd.ID_DETAIL_ACTIVITY', '=', 'progress.ID_DETAIL_ACTIVITY')->get();
+        $activity = DetailActivity::all();
+        $progress = Progress::all();
 
         $data = [];
+        $detail = [];
 
         foreach($log as $l){
             foreach($activity as $a){
                 if($a->ID_DETAIL_ACTIVITY == $l->activity){
+                    $total = 0;
+
+                    foreach($progress as $p){
+                        if($p->ID_DETAIL_ACTIVITY == $a->ID_DETAIL_ACTIVITY){
+                            $detail[] = $p;
+                            $total = $total + $p->PROGRESS;
+                        }
+                    }
+                    $a['TOTAL_PROGRESS'] = $total;
                     $data[] = $a;
                 }
             }
@@ -105,59 +117,40 @@ class PenanggungjawabController extends Controller
     public function update_progress(Request $request)
     {
         $nama_file = null;
-        $check = false;
-        $progress = Progress::all();
 
-        foreach($progress as $p){
-            if($p->ID_DETAIL_ACTIVITY == $request->id_detail_activity){
-                $check = true;
-                $id = $p->ID_PROGRESS;
-                break;
-            }
+        if($request->file('file') != null)
+        {
+            $file = $request->file('file');
+            $nama_file = $file->getClientOriginalName();
+            $file->move('assets/dokumen/', $nama_file);
         }
 
-        if($check == true){
-            if($request->file('file') != null)
-            {
-                $file = $request->file('file');
-                $nama_file = $file->getClientOriginalName();
-                $file->move('assets/dokumen/', $nama_file);
+        Progress::insert([
+            'ID_PROGRESS' => Uuid::uuid4()->getHex(),
+            'ID_DETAIL_ACTIVITY' => $request->id_detail_activity,
+            'PROGRESS' => $request->progress,
+            'KETERANGAN' => $request->keterangan,
+            'FILE' => $nama_file,
+            'created_at' => Carbon::now()
+        ]);
 
-                Progress::where('ID_PROGRESS', '=', $id)->update([
-                    'PROGRESS' => $request->progress,
-                    'KETERANGAN' => $request->keterangan,
-                    'FILE' => $nama_file,
-                    'updated_at' => Carbon::now()
-                ]);
-            }
-            else{
-                Progress::where('ID_PROGRESS', '=', $id)->update([
-                    'PROGRESS' => $request->progress,
-                    'KETERANGAN' => $request->keterangan,
-                    'updated_at' => Carbon::now()
-                ]);
-            }
-            
-        }
-        else{
-            if($request->file('file') != null)
-            {
-                $file = $request->file('file');
-                $nama_file = $file->getClientOriginalName();
-                $file->move('assets/dokumen/', $nama_file);
-            }
-
-            Progress::insert([
-                'ID_PROGRESS' => Uuid::uuid4()->getHex(),
-                'ID_DETAIL_ACTIVITY' => $request->id_detail_activity,
-                'PROGRESS' => $request->progress,
-                'KETERANGAN' => $request->keterangan,
-                'FILE' => $nama_file,
-                'created_at' => Carbon::now()
+        // Jika progress 100%
+        if($request->progress == "100"){
+            DetailActivity::update([
+                'STATUS' => 1,
+                'updated_at' => Carbon::now()
             ]);
         }
 
         return redirect('/pic/progress');
+    }
+
+    public function detail_progress($id)
+    {
+        $data = Progress::where('ID_DETAIL_ACTIVITY', '=', $id)->get();
+        $activity = DetailActivity::select('NAMA_AKTIFITAS')->where('ID_DETAIL_ACTIVITY', '=', $id)->first();
+
+        return view('pic.detail-progress', compact('data', 'activity'));
     }
 
     public function download_file(Request $request)

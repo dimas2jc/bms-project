@@ -83,6 +83,7 @@ Route::group(['middleware' => ['auth']],function(){
     /* PIC */
     Route::get('/pic/timetable', [PenanggungjawabController::class, 'timetable'])->name('pic');
     Route::get('/pic/progress', [PenanggungjawabController::class, 'progress']);
+    Route::get('/pic/detail-progress/{id}', [PenanggungjawabController::class, 'detail_progress']);
     
     Route::post('/pic/download', [PenanggungjawabController::class, 'download_file']);
     Route::post('/pic/activity/progress', [PenanggungjawabController::class, 'update_progress']);
