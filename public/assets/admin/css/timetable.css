@@ -3,8 +3,8 @@ table {
 }
 
 table td, table th {
-    word-wrap: break-word !important;
-    white-space: normal !important;
+    /* word-wrap: break-word !important;
+    white-space: normal !important; */
 }
 
 .toast-success {

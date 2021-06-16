@@ -59,7 +59,7 @@
 
                                 <div id="timetable-div">
                                     <!-- Main time table -->
-                                    <table class="table table-bordered">
+                                    <table class="table table-bordered table-sm">
                                         <thead class="bg-warning">
                                             <tr>
                                                 <th rowspan="3">Activities</th>
