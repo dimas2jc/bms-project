@@ -63,6 +63,12 @@ class AdminController extends Controller
 
             $detail_activity[$i]['PIC'] = $pic_name;
 
+            $detail_activity[$i]['STATUS'] = $this->check_activity_status(
+                $detail_activity[$i]['TANGGAL_START'],
+                $detail_activity[$i]['TANGGAL_END'],
+                $detail_activity[$i]['STATUS']
+            );
+
             // Progress
             if(DB::table('progress')->where('ID_DETAIL_ACTIVITY', $detail_activity[$i]['ID_DETAIL_ACTIVITY'])->exists()){
 
@@ -275,5 +281,59 @@ class AdminController extends Controller
         $file = public_path()."/assets/dokumen/".$data->FILE;
 
         return response()->download($file, $data->FILE);
+    }
+
+    private function check_activity_status($start_date, $end_date, $status)
+    {
+        $result = '';
+        $today = date('Y-m-d');
+        $start_date = date('Y-m-d', strtotime($start_date));
+        $end_date = date('Y-m-d', strtotime($end_date));
+        $diff_now_to_start = date_diff(
+            date_create($today),
+            date_create($start_date)
+        );
+        
+        $diff_now_to_end = date_diff(
+            date_create($today),
+            date_create($end_date)
+        );
+
+        $diff_start_to_end = date_diff(
+            date_create($start_date),
+            date_create($end_date)
+        );
+
+        if((int)$status == 0){
+
+            if($diff_now_to_start->days > 0 && $diff_now_to_start->invert == 0){
+                $result = 0;
+            } elseif ($diff_now_to_start->days >= 0 && $diff_now_to_start->invert == 1){
+                if($diff_now_to_end->days >= 0 && $diff_now_to_end->invert == 0){
+                    if($diff_start_to_end->days > 10 && $diff_now_to_end->days <= 10 && $diff_now_to_end->invert == 0){
+                        $result = 1;
+                    } else {
+                        $result = 1;
+                    }
+                } elseif ($diff_now_to_end->days >= 0 && $diff_now_to_end->invert == 1){
+                    $result = 3;
+                }
+            } elseif ($diff_now_to_start->days >= 0 && $diff_now_to_start->invert == 0){
+                if($diff_now_to_end->days >= 0 && $diff_now_to_end->invert == 0){
+                    if($diff_start_to_end->days > 10 && $diff_now_to_end->days <= 10 && $diff_now_to_end->invert == 0){
+                        $result = 1;
+                    } else {
+                        $result = 1;
+                    }
+                } elseif ($diff_now_to_end->days >= 0 && $diff_now_to_end->invert == 1){
+                    $result = 3;
+                }
+            }
+
+        } elseif((int)$status == 1){
+            $result = 4;
+        }
+
+        return $result;
     }
 }
