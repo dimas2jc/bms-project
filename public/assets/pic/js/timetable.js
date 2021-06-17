@@ -277,6 +277,27 @@ function view_progress_activity(activity_el){
         }
     }
 
+    // Progress
+    $.ajax({
+        type: 'GET',
+        headers: {
+            'X-CSRF-TOKEN': CSRF_TOKEN
+        },
+        url: `${BASE_URL}/activity/progress/${detail.ID_DETAIL_ACTIVITY}`,
+        async: false,
+        success: function(data){
+            $('#detail-progress-tbody').empty()
+            let total_progress = 0
+
+            for(let i = 0; i < data.length; i++){
+                total_progress += parseFloat(data[i].PROGRESS)
+            }
+
+            $('#progress-percentage-text').html(`${total_progress}%`)
+            $('#progress-percentage-bar').css('width', `${total_progress}%`)
+        }
+    })
+
     if(detail.STATUS == 0){
         $('#progress_status').val('Belum dimulai')
     } else if(detail.STATUS == 1){
@@ -288,8 +309,6 @@ function view_progress_activity(activity_el){
     }
 
     $('#progress_nama_activity').val(detail.NAMA_AKTIFITAS)
-    $('#progress-percentage-text').html(`${detail.PROGRESS}%`)
-    $('#progress-percentage-bar').css('width', `${detail.PROGRESS}%`)
     $('#progress-deadline').html(`${detail.DEADLINE.days} Hari lagi`)
     $('#progress-detail-btn').data('id', detail.ID_DETAIL_ACTIVITY)
     $('#update-progress-btn').data('id', detail.ID_DETAIL_ACTIVITY)

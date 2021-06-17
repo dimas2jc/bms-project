@@ -385,7 +385,7 @@ class AdminController extends Controller
                         $result = 1;
                     }
                 } elseif ($diff_now_to_end->days >= 0 && $diff_now_to_end->invert == 1){
-                    $result = 3;
+                    $result = 2;
                 }
             } elseif ($diff_now_to_start->days >= 0 && $diff_now_to_start->invert == 0){
                 if($diff_now_to_end->days >= 0 && $diff_now_to_end->invert == 0){
@@ -395,12 +395,12 @@ class AdminController extends Controller
                         $result = 1;
                     }
                 } elseif ($diff_now_to_end->days >= 0 && $diff_now_to_end->invert == 1){
-                    $result = 3;
+                    $result = 2;
                 }
             }
 
         } elseif((int)$status == 1){
-            $result = 4;
+            $result = 3;
         }
 
         return $result;
