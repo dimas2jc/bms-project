@@ -12,6 +12,9 @@ use App\Models\Outlet;
 use App\Models\Timeplan;
 use App\Models\Progress;
 use App\Models\UserLog;
+use App\Models\DetailCategoryCalendar;
+use App\Models\CategoryCalendar;
+use App\Models\Calendar;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Auth;
@@ -22,26 +25,46 @@ class InvestorController extends Controller
     {
         $investor = Auth::user()->ID_USER;
         $log = UserLog::where('user', '=', $investor)->first();
-
         $outlet = Outlet::where('ID_OUTLET', '=', $log->outlet)->first();
-        $detail_activity = CategoryActivity::join('detail_activity as d', 'd.ID_CATEGORY', '=', 'category_activity.ID_CATEGORY')->where('category_activity.ID_OUTLET', '=', $outlet->ID_OUTLET)->orderBy('d.created_at', 'ASC')->get()->toArray();
-        $timeplan = Timeplan::orderBy('created_at', 'ASC')->get()->toArray();
-        
-        for($i = 0; $i < count($detail_activity); $i++){
-            for($j = 0; $j < count($timeplan); $j++){
-                if($timeplan[$j]['ID_DETAIL_ACTIVITY'] == $detail_activity[$i]['ID_DETAIL_ACTIVITY']){
-                    $tanggal_mulai = $timeplan[$j]['TANGGAL_START'];
-                    $tanggal_selesai = $timeplan[$j]['TANGGAL_END'];
-                    $durasi = date_diff(date_create($tanggal_mulai), date_create($tanggal_selesai));
 
-                    $detail_activity[$i]['TANGGAL_START'] = date('Y-m-d', strtotime($tanggal_mulai));
-                    $detail_activity[$i]['TANGGAL_END'] = date('Y-m-d', strtotime($tanggal_selesai));
-                    $detail_activity[$i]['DURASI'] = $durasi;
+        $detail_category = DetailCategoryCalendar::where('ID_OUTLET', '=', $log->outlet)->get()->toArray();
+        $category_calendar = CategoryCalendar::orderBy('created_at', 'ASC')->get()->toArray();
+        $calendar = Calendar::orderBy('created_at', 'ASC')->get()->toArray();
+
+        $category = [];
+        for($i = 0; $i < count($detail_category); $i++){
+            for($j = 0; $j < count($category_calendar); $j++){
+                if($category_calendar[$j]['ID_CATEGORY_CALENDAR'] == $detail_category[$i]['ID_CATEGORY_CALENDAR']){
+                    $category[] = $category_calendar[$j];
                 }
             }
         }
 
-        return view('investor.calendar', compact('detail_activity', 'outlet', 'timeplan'));
+        $data = [];
+        for($k = 0; $k < count($category); $k++){
+            for($l = 0; $l < count($calendar); $l++){
+                if($calendar[$l]['ID_CATEGORY_CALENDAR'] == $category[$k]['ID_CATEGORY_CALENDAR']){
+                    $calendar[$l]['CATEGORY'] = $category[$k]['NAMA'];
+                    $tanggal_mulai = $calendar[$l]['TANGGAL_START'];
+                    $tanggal_selesai = $calendar[$l]['TANGGAL_END'];
+                    $durasi = date_diff(date_create($tanggal_mulai), date_create($tanggal_selesai));
+                    
+                    $data[$l] = $calendar[$l];
+                    $data[$l]['TANGGAL_START'] = date('Y-m-d', strtotime($tanggal_mulai));
+                    $data[$l]['TANGGAL_END'] = date('Y-m-d', strtotime($tanggal_selesai));
+                    $data[$l]['DURASI'] = $durasi;
+                }
+            }
+        }
+
+        return view('investor.calendar', compact('data', 'outlet'));
+    }
+
+    public function getDetailCalendar($id)
+    {
+        $data = Calendar::where('ID_CALENDAR', '=', $id)->first();
+
+        return view('investor.detail-calendar', compact('data'));
     }
 
     public function timetable()

@@ -86,7 +86,7 @@ Route::group(['middleware' => ['auth']],function(){
     /* Investor */
     Route::get('/investor/calendar', [InvestorController::class, 'calendar']);
     Route::get('/investor/timetable', [InvestorController::class, 'timetable'])->name('investor');
-    Route::get('investor/calendar/{id_category}', [AdminController::class, 'getCalendar']);
+    Route::get('/investor/calendar/detail/{id}', [InvestorController::class, 'getDetailCalendar']);
 
     /* PIC */
     Route::get('/pic/timetable', [PenanggungjawabController::class, 'timetable'])->name('pic');

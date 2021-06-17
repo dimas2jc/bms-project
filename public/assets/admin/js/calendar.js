@@ -35,7 +35,7 @@
     }, 
     t.prototype.onEventClick = function(t, n, a) {
         var o = this,
-        modalUpdate = '<p>Agenda : '+t.title+'.',
+        modalUpdate = '<p>Agenda : '+t.title+'.</p>',
         footer = '<div class="modal-footer">'+
                             '<button type="button" class="btn btn-sm btn-light btn-rounded px-3" data-dismiss="modal">Cancel</button>'+
                             '<a href="'+urlDetail+'/'+t.id+'"><button type="button" class="btn btn-sm btn-primary btn-rounded px-3 save-event">Detail</button></a>'+

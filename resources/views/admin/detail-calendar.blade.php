@@ -33,7 +33,7 @@
                     <div class="card-body">
                         <form method="post" action="{{url('admin/edit-calendar')}}" enctype="multipart/form-data">
                             @csrf
-                            <input type="hidden" name="id" value="{{$data->ID_CALENDAR}}"
+                            <input type="hidden" name="id" value="{{$data->ID_CALENDAR}}">
                             <div class="form-group col-md-4">
                                 <label>Tanggal Mulai</label>
                                 <input class="form-control input" type="date" name="date_start" value="{{date('Y-m-d', strtotime($data->TANGGAL_START))}}" readonly>

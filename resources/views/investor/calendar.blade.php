@@ -3,6 +3,7 @@
 @section('title', 'Calendar')
 
 @section('extra-css')
+    <link rel="stylesheet" href="{{ asset('/metroadmin/icons/fontawesome/css/all.min.css') }}">
     <link href="{{asset('metroadmin/vendor/fullcalendar/css/fullcalendar.min.css')}}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('/metroadmin/vendor/select2/css/select2.min.css') }}">
 @endsection
@@ -31,31 +32,16 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
-            <div class="card-body">
-                    <!-- <div class="row mb-3">
-                        <div class="col-2">
-                            <label class="mr-3">Select Outlet</label>
-                        </div>
-                        <div class="col-md-4 col-sm-8">
-                            <select class="form-control" name="outlet" id="outlet">
-                                <option selected disabled>Pilih Outlet..</option>
-                                
-                            </select>
-                        </div>
+                <div class="card-header">
+                    <div class="row col-lg-12 justify-content-center">
+                        <h4>
+                            {{$outlet->NAMA}}
+                        </h4>
                     </div>
-                    <div class="row mb-3">
-                        <div class="col-2">
-                            <label class="mr-3">Select Category</label>
-                        </div>
-                        <div class="col-md-4 col-sm-8">
-                            <select class="form-control" name="category" id="category">
-                                <option selected disabled>Pilih Kategori..</option>
-                                
-                            </select>
-                        </div>
-                    </div> -->
-                    <h4 class="card-title">Outlet {{$outlet->NAMA}}</h4>
-                    <hr>
+                </div><hr>
+                <div class="card-body">
+                    
+                    
                     <div id="calendar" class="app-fullcalendar"></div>
                 </div>
             </div>
@@ -63,7 +49,7 @@
 
         <!-- BEGIN MODAL -->
         <div class="modal fade none-border" id="event-modal">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h4 class="modal-title"><strong>Add New Event</strong></h4>
@@ -126,10 +112,11 @@
     <script src="{{asset('metroadmin/vendor/fullcalendar/js/fullcalendar.min.js')}}"></script>
     <script src="{{ asset('/metroadmin/vendor/select2/js/select2.min.js') }}"></script>
     <script>
-        const DETAIL_ACTIVITY = {!! json_encode($detail_activity) !!}
+        const DATA = {!! json_encode($data) !!}
+        const urlDetail = "{{url('investor/calendar/detail')}}"
         const urlCalendar = "{{url('investor/calendar')}}"
         const token = $('meta[name="csrf-token"]').attr('content')
-        console.log(DETAIL_ACTIVITY)
+        console.log(DATA)
     </script>
     <script src="{{asset('assets/investor/js/calendar.js')}}"></script>
 @endsection

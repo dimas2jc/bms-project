@@ -2,14 +2,15 @@
     "use strict";
     // Data Timeplan
     const data = [];
-    if(DETAIL_ACTIVITY != null){
-        for(let x = 0; x < DETAIL_ACTIVITY.length; x++){
+    if(DATA != null){
+        for(let x = 0; x < DATA.length; x++){
             data[x] = {
-                days: DETAIL_ACTIVITY[x].DURASI.days,
-                title: DETAIL_ACTIVITY[x].NAMA_AKTIFITAS,
-                start: DETAIL_ACTIVITY[x].TANGGAL_START,
-                end: moment(DETAIL_ACTIVITY[x].TANGGAL_END).add(1, "days").toDate(),
-                id: DETAIL_ACTIVITY[x].ID_DETAIL_ACTIVITY
+                days: DATA[x].DURASI.days,
+                title: DATA[x].JUDUL,
+                start: DATA[x].TANGGAL_START,
+                end: moment(DATA[x].TANGGAL_END).add(1, "days").toDate(),
+                id: DATA[x].ID_CALENDAR,
+                des: DATA[x].DESKRIPSI
             };
         };
     }
@@ -33,8 +34,23 @@
         e("#drop-remove").is(":checked") && t.remove()
     }, 
     t.prototype.onEventClick = function(t, n, a) {
+        var o = this,
+        modalUpdate = '<p>Agenda : '+t.title+'.</p>',
+        footer = '<div class="modal-footer">'+
+                            '<button type="button" class="btn btn-sm btn-light btn-rounded px-3" data-dismiss="modal">Cancel</button>'+
+                            '<a href="'+urlDetail+'/'+t.id+'"><button type="button" class="btn btn-sm btn-primary btn-rounded px-3 save-event">Detail</button></a>'+
+                        '</div>',
         
-    },
+        i = e('<form></form>');
+        i.append(modalUpdate),
+        o.$modal.find(".modal-footer").hide(),
+        i.append(footer),
+        o.$modal.modal({
+            backdrop: "static"
+        }),
+        o.$modal.find(".modal-title").after().empty().end().find(".modal-title").append("<strong>Agenda</strong>"),
+        o.$modal.find(".delete-event").hide().end().find(".save-event").hide().end().find(".modal-body").empty().prepend(i).end();
+    }, 
     t.prototype.onSelect = function(t, n, a) {
         // var o = this;
         // o.$modal.modal({
@@ -59,16 +75,16 @@
         // }), o.$calendarObj.fullCalendar("unselect")
     }, 
     t.prototype.enableDrag = function() {
-    //     e(this.$event).each(function() {
-    //         var t = {
-    //             title: e.trim(e(this).text())
-    //         };
-    //         e(this).data("eventObject", t), e(this).draggable({
-    //             zIndex: 999,
-    //             revert: !0,
-    //             revertDuration: 0
-    //         })
-    //     })
+        e(this.$event).each(function() {
+            var t = {
+                title: e.trim(e(this).text())
+            };
+            e(this).data("eventObject", t), e(this).draggable({
+                zIndex: 999,
+                revert: !0,
+                revertDuration: 0
+            })
+        })
     }, 
     t.prototype.init = function() {
         this.enableDrag();
@@ -113,39 +129,3 @@ function(e) {
     "use strict";
     e.CalendarApp.init()
 }(window.jQuery);
-
-$(function(){
-    $('select').select2();
-
-    //ambil kategori ketika outlet dipilih
-    $('#outlet').change(function(){
-        $("#category").empty();
-        var outlet = $(this).val();
-        $.ajax({
-            type: 'GET',
-            url: "/investor/getCategory/"+outlet,
-            success: function (results) {
-                if (results.success === true) {
-                    $("#category").empty();
-                    var option = new Option("Pilih Kategori..", true);
-                    $("#category").append(option);
-                    results.data.forEach(addOption)
-                    function addOption(item, index, arr){
-                        let text = item.NAMA;
-                        let val = item.ID_CATEGORY;
-                        var o = new Option(text, val);
-                        $(o).html(text);
-                        $("#category").append(o);
-                        $("#category").select2();
-                    }
-                }
-            }
-        });
-    });
-
-    //menampilkan calendar sesuai category
-    $('#category').change(function(){
-        var category = $(this).val();
-        window.location.replace(urlCalendar+"/"+category);
-    })
-});
