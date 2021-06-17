@@ -324,7 +324,7 @@ function view_progress_activity(activity_el){
         }
     }
 
-    if(status == "true"){
+    if(status == "true" && detail.STATUS != 0 && detail.STATUS != 3){
         document.getElementById('update-progress-btn').style.display = "block"
     }
     else{
