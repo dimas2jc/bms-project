@@ -64,16 +64,16 @@
                                             <tr>
                                                 <th rowspan="3">Activities</th>
                                                 <th rowspan="3">Durasi</th>
-                                                <th colspan="2">
+                                                {{-- <th colspan="2">
                                                     <i onclick="switch_year(this)" data-navigation="prev" class="fas fa-lg fa-caret-left" style="cursor: pointer;" data-toggle="tooltip" data-placement="right" title="Prev year"></i>
-                                                </th>
-                                                <th colspan="44">
+                                                </th> --}}
+                                                <th colspan="48">
                                                     <input type="hidden" value="{{ date('Y') }}" id="tahun-aktif">
                                                     <span class="display-tahun-aktif">{{ date('Y') }}</span>
                                                 </th>
-                                                <th colspan="2">
+                                                {{-- <th colspan="2">
                                                     <i onclick="switch_year(this)" data-navigation="next" class="fas fa-lg fa-caret-right" style="cursor: pointer;" data-toggle="tooltip" data-placement="left" title="Next year"></i>
-                                                </th>
+                                                </th> --}}
                                             </tr>
                                             <tr>
                                                 @for ($i = 1; $i <= 12; $i++)
